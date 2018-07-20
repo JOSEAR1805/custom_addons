@@ -207,13 +207,6 @@ class webVestidores(http.Controller):
         items_colas = request.env['items.colas'].search([])
         return request.render('vestidores.page_modistas', {'items_colas': items_colas})
 
-    
-    
-
-
-
-    
-
     @http.route(['/register_customer'], type='http', auth='public', website=True, methods=['GET'])
     def render_register_customer(self, **get):
         error = dict()
@@ -247,7 +240,7 @@ class webVestidores(http.Controller):
         })
         return request.redirect('/dressing_room')
 
-    @http.route(['/test'], type='http', auth="public", website=True )
+    @http.route(['/views_tv'], type='http', auth="public", website=True )
     def index_dressing_room(self, **kw):
         items_colas = request.env['items.colas'].search([])
         
