@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <template id="web_picking_signature" name="Signature">
+            <t t-call="website.layout">
+                <div class="container">
+                    <div class="text-center col-sm-12">
+                        <form t-att-action="form_action" t-att-method="form_method">
+                            <h3 class="page-header mt16">
+                                <span>Signature</span>
+                            </h3>
+                            <div style="width:800px;
+                                        height: 400px;
+                                        background:'gray';
+                                        border:solid 1px #a0a0a0;
+                                        margin: 0 auto;
+                                        ">
+                            </div>
+                            <div>
+                                <button class="btn
+                                                   btn-default
+                                                   btn-primary
+                                                   mb32
+                                                   a-submit
+                                                   a-submit-disable
+                                                   a-submit-loading"
+                                        type="submit">
+                                    <span>Confirm</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</openerp>

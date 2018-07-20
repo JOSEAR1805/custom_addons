@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_vestidor_template" model="ir.actions.act_window" >
+            <field name="name">Menú de Vestidores</field>
+            <field name="res_model">bridetobe.vestidores</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record model="ir.ui.view" id="view_vestidores_tree">
+            <field name="name">view.vestidores.tree</field>
+            <field name="model">bridetobe.vestidores</field>
+            <field name="arch" type="xml">
+                <tree string="Idea list">
+                    <field name="name"/>
+                    <field name="status"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="view_vestidores_form">
+            <field name='name'>view.vestidores.form</field>
+            <field name="model">bridetobe.vestidores</field>
+            <field name="arch" type="xml">
+                <form string="vestidor form">
+                    <sheet>
+                        <group colspan="1" col="2">
+                            <group>
+                                <field name="name"/>
+                            </group>
+                            <group>
+                                <field name="status"/>
+                            </group>
+                            <group>
+                                <field name="description"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <menuitem id="vestidores_menu_base" name="Vestidores" sequence="30"/>
+        <menuitem id="vestidor_template_1" name="Vestidor" parent="vestidores_menu_base" action="action_vestidor_template"/>
+    </data>
+</odoo>

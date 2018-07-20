@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="sale_rental.sale_rental_form" model="ir.ui.view">
+            <field name="name">sale.rental.form</field>
+            <field name="model">sale.rental</field>
+            <field name="arch" type="xml">
+                <form string="Rental">
+                    <header>
+                        <button name="%(action_sale_rental_cancelation_wizard)d" string="Cancel"
+                                groups="sales_team.group_sale_manager"
+                                type="action" attrs="{'invisible' : [('state','=','cancel')]}"
+                        />
+                        <!--<button name="cancel_rental" string="Cancel" groups="sales_team.group_sale_manager"-->
+                        <!--type="object" attrs="{'invisible' : [('state','=','cancel')]}"-->
+                        <!--/>-->
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group name="main" col="4">
+                            <field name="partner_id"/>
+                            <field name="rental_product_id" domain="[('rented_product_id', '!=', False)]"/>
+                            <field name="rented_product_id"/>
+                            <field name="start_date"/>
+                            <!--<field name="start_date_custom"/>-->
+                            <field name="test_date"/>
+                            <field name="delivery_date"/>
+                            <field name="end_date"/>
+                            <field name="rental_qty"/>
+                            <field name="start_order_line_id"/>
+                            <field name="start_order_id"/>
+                            <field name="event_place" readonly="1"/>
+                            <field name="procurement_id"/>
+                            <field name="state_internal"/>
+                            <field name="modista" readonly="1"/>
+                            <field name="seller_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <notebook>
+                            <page string="Comentarios">
+                                <field name="comments"/>
+                            </page>
+                            <page string="Detalles">
+                                <field name="details"/>
+                            </page>
+                            <page string="Entrega / Recepcion" groups="base.group_no_one">
+                                <group col="2">
+                                    <group name="stock-out" string="Delivery" col="2">
+                                        <field name="out_move_id"/>
+                                        <field name="out_state"/>
+                                        <field name="out_picking_id"/>
+                                    </group>
+                                    <group name="stock-in" string="Return" col="2">
+                                        <field name="in_move_id"/>
+                                        <field name="in_state"/>
+                                        <field name="in_picking_id"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+
+                    </sheet>
+                    <group name="sell" position="after">
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids" widget="mail_followers"/>
+                            <field name="message_ids" widget="mail_thread"/>
+                        </div>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="sale_rental.sale_rental_tree" model="ir.ui.view">
+            <field name="name">sale.rental.tree</field>
+            <field name="model">sale.rental</field>
+            <field name="arch" type="xml">
+                <tree editable="top" create="false" colors="inherit:True" color_field="alert_color">
+                    <field name="id" invisible="1"/>
+                    <button name="get_details" string="Detalles" type="object"/>
+                    <field name="partner_id"/>
+                    <field name="rental_product_id" domain="[('rented_product_id', '!=', False)]" options="{'no_create': True}"/>
+                    <field name="start_date"/>
+                    <!--<field name="start_date_custom"/>-->
+                    <field name="test_date"/>
+                    <field name="delivery_date" groups="sales_team.group_sale_manager"/>
+                    <field name="modista"/>
+                    <field name="state_internal"/>
+                    <field name="alert_color" invisible="1"/>
+                    <field name="end_date" invisible="1"/>
+                    <field name="state" string="Estado Cliente"/>
+                    <field name="out_state" invisible="1"/>
+                    <field name="in_state" invisible="1"/>
+                    <field name="rented_product_id" invisible="1"/>
+                    <!--<field name="same_day_order"/>-->
+                    <field name="internal_comment"/>
+                    <!--<button name="print_receipt" string="Trabajado" type="object"/>-->
+                    <!--<button class="sale_print_btn" string="imprimir" name="print_receipt" type="object"/>-->
+                </tree>
+            </field>
+        </record>
+
+        <record id="sale_rental_search" model="ir.ui.view">
+            <field name="name">sale.rental.search</field>
+            <field name="model">sale.rental</field>
+            <field name="inherit_id" ref="sale_rental.sale_rental_search"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="before">
+                    <field name="start_order_id"/>
+                    <field name="rental_product_id"/>
+                    <field name="modista"/>
+                </field>
+
+                <filter name="ordered" position="before">
+                    <filter string="Pruebas de Hoy"
+                            domain="[('test_date','&gt;=', time.strftime('%%Y-%%m-%%d')),('test_date', '&lt;=', time.strftime('%%Y-%%m-%%d'))]"/>
+                    <filter string="Entregas de Hoy"
+                            domain="[('delivery_date','&gt;=', time.strftime('%%Y-%%m-%%d')),('delivery_date', '&lt;=', time.strftime('%%Y-%%m-%%d'))]"/>
+
+                    <filter string="Pruebas de la Semana" domain="[('test_date', '&gt;=', ((context_today()+relativedelta(weeks=-2, weekday=0)).strftime('%%Y-%%m-%%d'))),
+                                                        ('test_date', '&lt;=', ((context_today()+relativedelta(weeks=1, weekday=6)).strftime('%%Y-%%m-%%d')))]"/>
+                    <filter string="Entregas de la Semana" domain="[('delivery_date', '&gt;=', ((context_today()+relativedelta(weeks=-2, weekday=0)).strftime('%%Y-%%m-%%d'))),
+                                                        ('delivery_date', '&lt;=', ((context_today()+relativedelta(weeks=1, weekday=6)).strftime('%%Y-%%m-%%d')))]"/>
+                    <separator/>
+                    <filter name="internal_new" string="New"
+                            domain="[('state_internal','=',%(website_bridetobe.internal_state_new)d)]"/>
+                    <filter name="internal_ajustes" string="Ajustes"
+                            domain="[('state_internal','=',%(website_bridetobe.internal_state_ajuste)d)]"/>
+                    <filter name="internal_pruebas" string="Pruebas"
+                            domain="[('state_internal','=',%(website_bridetobe.internal_state_pruebas)d)]"/>
+                    <filter name="internal_probado" string="Probado"
+                            domain="[('state','=','tested')]"/>
+                    <filter name="internal_terminacion" string="Terminacion"
+                            domain="[('state_internal','=',%(website_bridetobe.internal_state_terminacion)d)]"/>
+                    <filter name="internal_terminado" string="Terminado"
+                            domain="[('state_internal','=',%(website_bridetobe.internal_state_terminado)d)]"/>
+                    <filter name="internal_entregado" string="Entregado"
+                            domain="[('state_internal','=',%(website_bridetobe.internal_state_entregado)d)]"/>
+                    <separator/>
+                    <filter string="Entregado"
+                            domain="[('state','=','out')]"/>
+                    <filter string="Pendiente Prueba"
+                            domain="[('state','=','pending')]"/>
+                    <filter string="Probado"
+                            domain="[('state','=','tested')]"/>
+                    <separator/>
+                </filter>
+
+                <group name="groupby" position="inside">
+                    <filter string="Modista" context="{'group_by': 'modista'}"/>
+                    <filter string="Estado Cliente" context="{'group_by': 'state_internal'}"/>
+                </group>
+            </field>
+        </record>
+
+        <record id="view_sale_rental_calendar" model="ir.ui.view">
+            <field name="name">sale.rental.calendar</field>
+            <field name="model">sale.rental</field>
+            <field name="arch" type="xml">
+                <calendar string="Rentals"
+                          date_start="delivery_date"
+                          mode="month"
+                >
+                    <field name="partner_id"/>
+                    <field name="rented_product_id"/>
+                    <field name="event_place"/>
+                </calendar>
+            </field>
+        </record>
+
+        <record id="sale_rental_flow_tree" model="ir.ui.view">
+            <field name="name">sale.rental.flow.tree</field>
+            <field name="model">sale.rental</field>
+            <field name="arch" type="xml">
+                <tree create="false" edit='false' editable="top"
+                      colors="inherit:True" color_field="alert_color">
+                    <field name="partner_id"/>
+                    <field name="rental_product_id"/>
+                    <field name="start_date" string="Fecha Evento"/>
+                    <!--<field name="start_date_custom" string="Fecha Evento"/>-->
+                    <field name="test_date" groups="website_bridetobe.group_sale_bridetobe_modista"/>
+                    <field name="delivery_date" groups="website_bridetobe.group_sale_bridetobe_terminacion"/>
+                    <field name="modista"/>
+                    <field name="alert_color" invisible="1"/>
+                    <field name="end_date" invisible="1"/>
+                    <field name="out_state" invisible="1"/>
+                    <field name="in_state" invisible="1"/>
+                    <field name="rented_product_id" invisible="1"/>
+                    <field name="partner_id" invisible="1"/>
+                    <field name="state_internal"/>
+                    <field name="internal_comment" groups="website_bridetobe.group_sale_bridetobe_terminacion"
+                           readonly="1"/>
+                    <button name="next_state" string="Trabajado" type="object"
+                            groups="website_bridetobe.group_sale_bridetobe_lavanderia,
+                                    website_bridetobe.group_sale_bridetobe_modista"
+                    />
+                    <button name="print_receipt" string="Trabajado" type="object"
+                            groups="website_bridetobe.group_sale_bridetobe_terminacion"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="sale_rental_in_tree" model="ir.ui.view">
+            <field name="name">sale.rental.tree</field>
+            <field name="model">sale.rental</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="partner_id"/>
+                    <field name="rental_product_id"/>
+                    <field name="start_date" string="Fecha Evento"/>
+                    <field name="modista"/>
+                    <field name="seller_id"/>
+                    <field name="current_days"/>
+                    <button name="send_return_email" string="Notificar Devolucion" type="object"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="sale_rental.sale_rental_action" model="ir.actions.act_window">
+            <field name="name">Rental Administration</field>
+            <field name="res_model">sale.rental</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="view_id" ref="sale_rental.sale_rental_tree"/>
+        </record>
+
+        <record id="sale_rental_action" model="ir.actions.act_window">
+            <field name="name">Rental Administration</field>
+            <field name="res_model">sale.rental</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="domain">[('state', 'not in', ('cancel', 'in', 'out'))]</field>
+            <field name="view_id" ref="sale_rental.sale_rental_tree"/>
+        </record>
+
+        <record id="sale_rental_flow_action" model="ir.actions.act_window">
+            <field name="name">Rentals</field>
+            <field name="res_model">sale.rental</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="website_bridetobe.sale_rental_flow_tree"/>
+        </record>
+
+        <record id="sale_rental_in_action" model="ir.actions.act_window">
+            <field name="name">Recepciones Pendientes</field>
+            <field name="res_model">sale.rental</field>
+            <field name="view_type">form</field>
+            <field name="domain">[('state', '=', 'out')]</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="website_bridetobe.sale_rental_in_tree"/>
+        </record>
+
+        <menuitem id="sale_rental_menu_extra"
+                  action="sale_rental_flow_action"
+                  groups="group_sale_bridetobe_lavanderia,group_sale_bridetobe_modista,group_sale_bridetobe_prueba,group_sale_bridetobe_terminacion"
+                  sequence="90"/>
+
+        <menuitem id="sale_rental_in_menu"
+                  name="Recepciones Pendientes"
+                  parent="sale_rental_menu_base"
+                  action="sale_rental_in_action"/>
+
+    </data>
+</openerp>

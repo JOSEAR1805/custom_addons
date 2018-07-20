@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record id="modista" model="hr.department">
+            <field name="name">Modista</field>
+        </record>
+
+        <record id="lavanderia" model="hr.department">
+            <field name="name">Lavanderia</field>
+        </record>
+
+        <record id="terminacion" model="hr.department">
+            <field name="name">Terminacion</field>
+        </record>
+    </data>
+</openerp>

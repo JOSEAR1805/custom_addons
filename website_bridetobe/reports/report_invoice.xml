@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <template id="report_invoice_document" inherit_id="account.report_invoice_document">
+            <div class="row" t-if="len(o.tax_line_ids) > 0" position="inside">
+                <div class="col-xs-6">
+                    <table t-if="o.state != 'paid'" class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Abono</th>
+                                <th>Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <t t-if="o.residual &gt; 0" t-esc="o.amount_total - o.residual" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    <t t-if="o.residual &lt;= 0" t-esc="o.residual" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                                <td>
+                                    <t t-if="o.residual &gt; 0" t-esc="o.residual" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    <t t-if="o.residual &lt;= 0" t-esc="o.amount_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table t-if="o.state == 'paid'" class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Balance Factura</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <t t-esc="o.residual" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </template>
+
+
+
+    </data>
+</openerp>

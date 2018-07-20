@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- Inherit Form View to Modify it -->
+        <record id="view_sales_config" model="ir.ui.view">
+            <field name="name">sale.config.settings</field>
+            <field name="model">sale.config.settings</field>
+            <field name="inherit_id" ref="sale.view_sales_config"/>
+            <field name="arch" type="xml">
+                <div id="main" position="inside">
+                    <group string="Rentals">
+                        <field name="security_rental"/>
+                    </group>
+                </div>
+            </field>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_bridetobe_confeccion_form" model="ir.ui.view">
+            <field name="name">bridetobe.confeccion.form</field>
+            <field name="model">bridetobe.confeccion</field>
+            <field name="arch" type="xml">
+                <form string="Confecciones">
+                    <header>
+                        <button name="create_invoice"
+                                string="Create Invoice"
+                                type="object"
+                                attrs="{'invisible':[('invoice_created', '=', True)]}"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_invoice"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-pencil-square-o"
+                                    attrs="{'invisible':[('invoice_created', '=', False)]}">
+                                <span>Invoice</span>
+                            </button>
+                        </div>
+                        <group col="4">
+                            <field name="name"/>
+                            <field name="partner_id"/>
+                            <field name="tipo_confeccion"/>
+                            <field name="modista_id"/>
+                            <field name="tela"/>
+                            <field name="materiales"/>
+                            <field name="c_moda"/>
+                            <field name="compra_tela"/>
+                            <field name="event_date"/>
+                            <field name="event_place"/>
+                            <field name="costo" required="1"/>
+                            <field name="description" required="1"/>
+                            <field name="invoice_created" invisible="1"/>
+                        </group>
+                        <notebook>
+                            <page string="Medidas">
+                                <group col="6">
+                                    <field name="busto"/>
+                                    <field name="cintura"/>
+                                    <field name="cadera"/>
+                                    <field name="falda"/>
+                                    <field name="espalda"/>
+                                    <field name="altura_busto"/>
+                                    <field name="separacion_busto"/>
+                                    <field name="talle_trasero"/>
+                                    <field name="largo_manga"/>
+                                    <field name="ancho_manga"/>
+                                </group>
+                            </page>
+                            <page string="Medidas y Pruebas">
+                                <field name="medidas_pruebas">
+                                    <tree editable="top">
+                                        <field name="date_time"/>
+                                        <field name="modista_id"/>
+                                        <field name="observaciones"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+
+            </field>
+        </record>
+
+        <record id="view_bridetobe_confeccion_tree" model="ir.ui.view">
+            <field name="name">bridetobe.confeccion.tree</field>
+            <field name="model">bridetobe.confeccion</field>
+            <field name="arch" type="xml">
+                <tree string="Confecciones">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="tipo_confeccion"/>
+                    <field name="modista_id"/>
+                    <field name="tela"/>
+                    <field name="materiales"/>
+                    <field name="c_moda"/>
+                    <field name="compra_tela"/>
+                    <field name="event_date"/>
+                    <field name="event_place"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_bridetobe_medida_prueba_form" model="ir.ui.view">
+            <field name="name">bridetobe.medida_prueba.form</field>
+            <field name="model">bridetobe.medida_prueba</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <field name="date_time"/>
+                            <field name="modista_id"/>
+                            <field name="observaciones"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_bridetobe_confeccion_calendar" model="ir.ui.view">
+            <field name="name">confeccion_calendar</field>
+            <field name="model">bridetobe.confeccion</field>
+            <field name="arch" type="xml">
+                <calendar string="Confecciones"
+                          date_start="event_date"
+                          mode="month"
+                >
+                    <field name="partner_id"/>
+                    <field name="name"/>
+                    <field name="event_place"/>
+                </calendar>
+            </field>
+        </record>
+
+        <record id="action_bridetobe_confeccion" model="ir.actions.act_window">
+            <field name="name">Confecciones</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bridetobe.confeccion</field>
+            <field name="view_mode">tree,form,calendar</field>
+        </record>
+
+        <menuitem id="bridetobe_confecciones_menu" parent="sales_team.menu_base_partner"
+                  action="action_bridetobe_confeccion" name="Confecciones" sequence="100"/>
+    </data>
+</openerp>

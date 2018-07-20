@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="action_web_picking_in" model="ir.actions.act_url">
+            <field name="name">Deliveries</field>
+            <field name="type">ir.actions.act_url</field>
+            <field name="target">self</field>
+            <field name="url">/picking_in</field>
+        </record>
+
+        <menuitem action="action_web_picking_in"
+                  name="Recepciones"
+                  id="menu_web_picking_in"
+                  sequence="3"
+                  web_icon="web_picking_in,static/description/menu_icons/reception.png"
+        />
+
+    </data>
+</openerp>

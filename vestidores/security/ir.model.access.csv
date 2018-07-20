@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_vestidores_vestidores,vestidores.vestidores,model_vestidores_vestidores,,1,0,0,0
+access_vestidores_bridetobe.vestidores,vestidores.bridetobe.vestidores,model_vestidores_bridetobe.vestidores,,1,0,0,0

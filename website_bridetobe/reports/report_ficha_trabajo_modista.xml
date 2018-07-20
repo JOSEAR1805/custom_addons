@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <report
+                id="report_ficha_trabajo_modista"
+                model="report.bridetobe.ficha_trabajo_modista"
+                report_type="qweb-pdf"
+                string="Fichas Trabajo Modistas"
+                name="website_bridetobe.template_ficha_trabajo_modista"
+        />
+        <report
+                id="report_ficha_trabajo_modista_single"
+                model="sale.rental"
+                report_type="qweb-pdf"
+                string="Fichas Trabajo"
+                name="website_bridetobe.template_ficha_trabajo_modista_single"
+        />
+
+
+        <template id="website_bridetobe.ficha_trabajo_modista_lines">
+            <style type="text/css">
+                .td{border-bottom: thin solid;}
+            </style>
+            <t t-foreach="sale_rentals" t-as="l">
+                <table class="tg" width="100%">
+                    <thead class="text-center align-middle">
+                        <tr style="color:#FFFFFF;background-color:#333333;align:center;">
+                            <td colspan="6" valign="middle">
+
+                                <strong t-esc="modista.name"/>
+                            </td>
+                        </tr>
+                        <tr style="align:center;background-color:#c0c0c0;">
+                            <th class="th">Cliente</th>
+                            <th class="th">Articulo</th>
+                            <th class="th">Fecha Evento</th>
+                            <th class="th">Fecha/Hora Prueba</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span t-field="l.partner_id.name"/>
+                            </td>
+                            <td>
+                                [<span t-field="l.rental_product_id.barcode"/>]
+                                <span t-esc="l.rental_product_id.name.replace('Rental of ','')"/>
+                            </td>
+                            <td class="text-right">
+                                <span t-field="l.start_date"/>
+                                <!--<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"/>-->
+                            </td>
+                            <td class="text-right">
+                                <!--<span t-field="l.test_date"/>-->
+                                <span t-esc="context_timestamp(datetime.datetime.strptime(l.test_date,'%Y-%m-%d %H:%M:%S')).strftime('%Y-%m-%d %I:%M %p')"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table class="tg" width="100%">
+                    <thead class="text-center align-middle">
+                        <tr style="color:#FFFFFF;background-color:#333333;align:center;">
+                            <td colspan="6" valign="middle">Medidas</td>
+                        </tr>
+                        <tr style="align:center;background-color:#c0c0c0;">
+                            <th class="th">Busto</th>
+                            <th class="th">Cintura</th>
+                            <th class="th">Cadera</th>
+                            <th class="th">Largo de Falda</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span t-field="l.start_order_id.busto"/>
+                            </td>
+                            <td>
+                                <span t-field="l.start_order_id.cintura"/>
+                            </td>
+                            <td>
+                                <span t-field="l.start_order_id.cadera"/>
+                            </td>
+                            <td>
+                                <span t-field="l.start_order_id.falda"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td">
+                                <strong>Comentarios</strong>
+                            </td>
+                            <td colspan="5" class="td">
+                                <span t-field="l.start_order_id.comments"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div align="center">
+                    <img t-if="l.rental_product_id.image"
+                         t-att-src="'data:image/png;base64,%s' % l.rental_product_id.image"
+                         style="max-height: 500px;"/>
+                </div>
+
+                <p style="page-break-before:always;"></p>
+            </t>
+        </template>
+
+        <template id="website_bridetobe.template_ficha_trabajo_modista">
+            <t t-call="report.html_container">
+                <t t-call="report.internal_layout">
+                    <div class="page">
+                        <t t-set="sale_rental_ids" t-value="docs.get_rentals()"/>
+                        <t t-if="docs.modista_ids">
+                            <t t-foreach="docs.modista_ids" t-as="modista_id">
+                                <t t-set="sale_rentals" t-value="docs.get_rentals(modista_id)"/>
+                                <t t-if="sale_rentals">
+                                    <t t-call="website_bridetobe.ficha_trabajo_modista_lines">
+                                        <t t-set="modista" t-value="modista_id"/>
+                                        <t t-set="sale_rentals" t-value="sale_rentals"/>
+                                    </t>
+                                </t>
+                                <p style="page-break-after:always"></p>
+                            </t>
+                        </t>
+
+                        <t t-if="not docs.modista_ids">
+                            <t t-foreach="docs.get_modistas()" t-as="modista_id">
+                                <t t-set="sale_rentals" t-value="docs.get_rentals(modista_id)"/>
+                                <t t-if="sale_rentals">
+                                    <t t-call="website_bridetobe.ficha_trabajo_modista_lines">
+                                        <t t-set="modista" t-value="modista_id"/>
+                                        <t t-set="sale_rentals" t-value="sale_rentals"/>
+                                    </t>
+                                </t>
+                                <p style="page-break-after:always"></p>
+                            </t>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+        <record id="report_ficha_trabajo_modista_view" model="ir.ui.view">
+            <field name="name">report_ficha_trabajo_modista_view</field>
+            <field name="model">report.bridetobe.ficha_trabajo_modista</field>
+            <field name="arch" type="xml">
+                <form string="Ficha Trabajo Modistas">
+                    <sheet>
+                        <group>
+                            <field name="modista_ids" widget="many2many_tags"/>
+                        </group>
+                        <group col="4">
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="check_report" string="Print" type="object" default_focus="1"
+                                class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="report_ficha_trabajo_modista_action" model="ir.actions.act_window">
+            <field name="name">Ficha Trabajo Modistas</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">report.bridetobe.ficha_trabajo_modista</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <template id="website_bridetobe.template_ficha_trabajo_modista_single">
+            <t t-call="report.html_container">
+                <t t-call="report.internal_layout">
+                    <div class="page">
+                        <style type="text/css">
+                            .td{border-bottom: thin solid;}
+                        </style>
+                        <table class="tg" width="100%">
+                            <thead class="text-center align-middle">
+                                <tr style="color:#FFFFFF;background-color:#333333;align:center;">
+                                    <td colspan="6" valign="middle">
+
+                                        <strong t-esc="docs.modista.name"/>
+                                    </td>
+                                </tr>
+                                <tr style="align:center;background-color:#c0c0c0;">
+                                    <th class="th">Cliente</th>
+                                    <th class="th">Articulo</th>
+                                    <th class="th">Fecha Evento</th>
+                                    <th class="th">Fecha/Hora Prueba</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <span t-field="docs.partner_id.name"/>
+                                    </td>
+                                    <td>
+                                        [<span t-field="docs.rental_product_id.barcode"/>]
+                                        <span t-esc="docs.rental_product_id.name.replace('Rental of ','')"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="docs.start_date"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="context_timestamp(datetime.datetime.strptime(docs.test_date,'%Y-%m-%d %H:%M:%S')).strftime('%Y-%m-%d %I:%M %p')"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="tg" width="100%">
+                            <thead class="text-center align-middle">
+                                <tr style="color:#FFFFFF;background-color:#333333;align:center;">
+                                    <td colspan="6" valign="middle">Medidas</td>
+                                </tr>
+                                <tr style="align:center;background-color:#c0c0c0;">
+                                    <th class="th">Busto</th>
+                                    <th class="th">Cintura</th>
+                                    <th class="th">Cadera</th>
+                                    <th class="th">Largo de Falda</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <span t-field="docs.start_order_id.busto"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="docs.start_order_id.cintura"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="docs.start_order_id.cadera"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="docs.start_order_id.falda"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="td">
+                                        <strong>Comentarios</strong>
+                                    </td>
+                                    <td colspan="5" class="td">
+                                        <span t-field="docs.start_order_id.comments"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div align="center">
+                            <img t-if="docs.rental_product_id.image"
+                                 t-att-src="'data:image/png;base64,%s' % docs.rental_product_id.image"
+                                 style="max-height: 500px;"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>

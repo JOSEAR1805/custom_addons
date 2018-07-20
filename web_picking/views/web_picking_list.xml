@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="web_picking_list" name="List">
+            <t t-call="website.layout">
+                <div class="container">
+                    <div style="text-align:center;">
+                        <div class='text-center'>
+                            <t t-if="error" t-foreach="error.get('error_message', [])" t-as="err">
+                                <h3 class="text-danger" t-esc="err"/>
+                            </t>
+                        </div>
+                        <form t-att-action="form_action" t-att-method="form_method">
+                            <h3 class="page-header mt16">
+                                <span t-esc="page_header"/>
+                            </h3>
+                            <div class="clearfix">
+                                <div class="text-right">
+                                    <input type="text" placeholder="Search..." name="search"/>
+                                    <button class="btn
+                                                   btn-default
+                                                   btn-primary
+                                                   pull-right
+                                                   mb32
+                                                   a-submit
+                                                   a-submit-disable
+                                                   a-submit-loading"
+                                            type="submit"
+                                            name="submit"
+                                            value="search"
+                                    >
+                                        <span>Search</span>
+                                    </button>
+                                </div>
+                                <div>
+                                    <table class="table table-striped table-condensed"
+                                           style="background-color:white;">
+                                        <tr name="table-header">
+                                            <th class="text-center">Order</th>
+                                            <th class="text-center">Source</th>
+                                            <th class="text-center">Customer</th>
+                                            <th class="text-center">State</th>
+                                            <th></th>
+                                        </tr>
+                                        <tr t-foreach="picking_ids" t-as="picking_id">
+                                            <td>
+                                                <span t-esc="picking_id.name"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="picking_id.origin"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="picking_id.partner_id.name"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="picking_id.state"/>
+                                            </td>
+                                            <td>
+                                                <button class="btn
+                                                           btn-default
+                                                           btn-primary
+                                                           pull-right
+                                                           mb32
+                                                           a-submit
+                                                           a-submit-disable
+                                                           a-submit-loading"
+                                                        type="submit"
+                                                        name="picking_id"
+                                                        t-att-value="picking_id.id"
+                                                >
+                                                    <span>View Order</span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <input type="hidden" name="picking_type" t-att-value="picking_type"/>
+                        </form>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</openerp>

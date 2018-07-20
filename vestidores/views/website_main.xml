@@ -1,0 +1,35 @@
+<odoo>
+   <data>
+        <template id="assets_frontend" inherit_id="website.assets_frontend" name="Vestidores">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/vestidores/static/src/ccs/select2.min.css"/>
+                <link rel="stylesheet" href="/vestidores/static/src/ccs/style.css"/>
+                <script type="text/javascript" src="/vestidores/static/src/js/sweetalert.min.js"></script>
+                <script type="text/javascript" src="/vestidores/static/src/js/select2.min.js"></script>
+                <script type="text/javascript" src="/vestidores/static/src/js/responsivevoice.js"></script>
+                <script type="text/javascript" src="/vestidores/static/src/js/vestidores.js"></script>
+            </xpath>
+        </template>
+
+        <template id="homepage_inherit" inherit_id="website_bridetobe.homepage" name="homepage_inherit">
+            <xpath expr="//div/div[1]" position="before">
+                <div class="col-xs-12">
+                    <div class="col-sm-6">
+                        <a class="btn btn-primary" href="/my_rental">
+
+                            <span>Clientes</span>
+                        </a>
+                    </div>
+                    <div class="col-sm-6">
+                        <a class="btn btn-primary" href="/modista">
+                            <span>Modistas</span>
+                        </a>
+                    </div>
+                </div>
+            </xpath>
+            <xpath expr="//div/div[2]/div[2]/a" position="attributes">
+                <attribute name="href">/dressing_room</attribute>
+            </xpath>
+        </template>
+   </data>
+</odoo>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="confecciones_product" model="product.template">
+            <field name="name">Confecciones</field>
+            <field name="type">service</field>
+        </record>
+
+        <record id="alteracion_product" model="product.template">
+            <field name="name">Alteraciones</field>
+            <field name="type">product</field>
+        </record>
+
+        <record id="alteracion_rental_product" model="product.template">
+            <field name="name">Servicio de Alteracion</field>
+            <field name="type">service</field>
+            <field name="rented_product_id" ref="alteracion_product"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="uom_id" ref="product.product_uom_day"/>
+            <field name="uom_po_id" ref="product.product_uom_day"/>
+            <field name="must_have_dates" eval="True"/>
+        </record>
+    </data>
+</openerp>

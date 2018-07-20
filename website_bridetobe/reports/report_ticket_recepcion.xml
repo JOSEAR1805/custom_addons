@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <template id="report_ticket_recepcion">
+            <receipt width='40'>
+
+                <div align="center">
+                    <img t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 35px;height: 35px;"/>
+                    <div class="col-sm-12">
+                        <h3 t-esc="company.name"/>
+                    </div>
+                    <div class="col-sm-12">
+                        <t t-esc="company.street"/>
+                        <t t-esc="company.street2"/>
+                        <br></br>
+                        <t t-esc="company.city"/>
+                        <t t-esc="company.state_id.name"/>
+                        <t t-esc="company.country_id.name"/>
+                    </div>
+                    <div class="col-sm-12">
+                        Tel.:
+                        <t t-esc="company.phone"/>
+                        <br/>
+                        <t t-esc="company.email"/>
+                        <br/>
+                        <t t-esc="company.name"/>
+                        <br/>
+                        RNC:
+                        <t t-esc="company.vat"/>
+                        <br/>
+                    </div>
+                </div>
+                <div>------------------------------------------</div>
+                <div align="center">
+                    <span>Recepcion de Articulos</span>
+                </div>
+                <div>------------------------------------------</div>
+                <line>
+                    <left>Cant</left>
+                    <left>Descripcion</left>
+                </line>
+                <div>------------------------------------------</div>
+                <t t-foreach="receipt.pack_operation_product_ids" t-as="receipt_line">
+                    <line>
+                        <left>
+                            <t t-esc="receipt_line.product_qty"/>
+                        </left>
+                        <right>
+                            <t t-esc="receipt_line.product_id.product_tmpl_id.rental_code"/>
+                        </right>
+
+                    </line>
+                </t>
+                <div>------------------------------------------</div>
+
+
+            </receipt>
+        </template>
+
+    </data>
+</openerp>

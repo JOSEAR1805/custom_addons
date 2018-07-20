@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_partner_form" model="ir.ui.view">
+            <field name="name">res.partner.form.bride.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <field name="vat" position="after">
+                    <field name="customer_code" placeholder="Customer Code"/>
+                </field>
+                <xpath expr="//notebook" position="inside">
+                    <page string="Medidas Corporales">
+                        <group col="6">
+                            <field name="busto"/>
+                            <field name="cintura"/>
+                            <field name="cadera"/>
+                            <field name="falda"/>
+                            <field name="espalda"/>
+                            <field name="talle_delantero"/>
+                            <field name="altura_busto"/>
+                            <field name="separacion_busto"/>
+                            <field name="talle_trasero"/>
+                            <field name="largo_manga"/>
+                            <field name="ancho_manga"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

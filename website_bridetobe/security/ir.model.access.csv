@@ -1,0 +1,29 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_sale_internal_state_sale_manager,Sale Internal State Manager,model_sale_rental_internal_state,sales_team.group_sale_manager,1,1,1,0
+access_sale_internal_state_sale_salesman,Sale Internal State Salesman,model_sale_rental_internal_state,sales_team.group_sale_salesman,1,0,0,0
+access_sale_internal_state_sale_modistas,Sale Internal State Modistas,model_sale_rental_internal_state,group_sale_bridetobe_modista,1,0,0,0
+access_sale_internal_state_sale_lavanderia,Sale Internal State Lavanderia,model_sale_rental_internal_state,group_sale_bridetobe_lavanderia,1,0,0,0
+access_sale_internal_state_sale_prueba,Sale Internal State Pruebas,model_sale_rental_internal_state,group_sale_bridetobe_prueba,1,0,0,0
+access_sale_rental_lavanderia,Full access on sale.rental to Sale Manager,model_sale_rental,group_sale_bridetobe_lavanderia,1,1,0,0
+access_sale_rental_prueba,Full access on sale.rental to Sale Manager,model_sale_rental,group_sale_bridetobe_prueba,1,1,0,0
+access_sale_rental_modista,Full access on sale.rental to Sale Modista,model_sale_rental,group_sale_bridetobe_modista,1,1,0,0
+access_res_partner_lavanderia,Read Acces on res.partner,base.model_res_partner,group_sale_bridetobe_lavanderia,1,1,0,0
+access_res_partner_prueba,Read Acces on res.partner,base.model_res_partner,group_sale_bridetobe_prueba,1,1,0,0
+access_res_partner_modista,Read Acces on res.partner,base.model_res_partner,group_sale_bridetobe_modista,1,1,0,0
+access_sale_order_modista,Read Acces on sale.order,sale.model_sale_order,group_sale_bridetobe_modista,1,1,0,0
+access_sale_order_lavanderia,Read Acces on sale.order,sale.model_sale_order,group_sale_bridetobe_lavanderia,1,1,0,0
+access_sale_order_prueba,Read Acces on sale.order,sale.model_sale_order,group_sale_bridetobe_prueba,1,1,0,0
+access_sale_order_line_modista,Read Acces on sale.order.line,sale.model_sale_order_line,group_sale_bridetobe_modista,1,1,0,0
+access_sale_order_line_lavanderia,Read Acces on sale.order.line,sale.model_sale_order_line,group_sale_bridetobe_lavanderia,1,1,0,0
+access_sale_order_line_prueba,Read Acces on sale.order.line,sale.model_sale_order_line,group_sale_bridetobe_prueba,1,1,0,0
+access_bridetobe_confeccion,access_bridetobe_confeccion,model_bridetobe_confeccion,sales_team.group_sale_manager,1,1,1,0
+access_bridetobe_medida_prueba,access_bridetobe_medida_prueba,model_bridetobe_medida_prueba,sales_team.group_sale_manager,1,1,1,0
+access_sale_order_line_terminacion,Read Acces on sale.order.line,sale.model_sale_order_line,group_sale_bridetobe_terminacion,1,1,0,0
+access_sale_order_terminacion,Read Acces on sale.order,sale.model_sale_order,group_sale_bridetobe_terminacion,1,1,0,0
+access_res_partner_terminacion,Read Acces on res.partner,base.model_res_partner,group_sale_bridetobe_terminacion,1,1,0,0
+access_sale_rental_terminacion,Full access on sale.rental to Sale Manager,model_sale_rental,group_sale_bridetobe_terminacion,1,1,0,0
+access_sale_internal_state_sale_terminacion,Sale Internal State Pruebas,model_sale_rental_internal_state,group_sale_bridetobe_terminacion,1,0,0,0
+access_stock_picking_terminacion,Stock Pickings,stock.model_stock_picking,group_sale_bridetobe_terminacion,1,1,0,0
+access_stock_picking_prueba,Stock Pickings,stock.model_stock_picking,group_sale_bridetobe_prueba,1,1,0,0
+access_stock_picking_modista,Stock Pickings,stock.model_stock_picking,group_sale_bridetobe_modista,1,1,0,0
+access_stock_picking_lavanderia,Stock Pickings,stock.model_stock_picking,group_sale_bridetobe_lavanderia,1,1,0,0

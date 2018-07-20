@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="web_picking_details" name="Details">
+            <t t-call="website.layout">
+                <div class="container">
+                    <div style="text-align:center;">
+                        <div class='text-center'>
+                            <t t-if="error" t-foreach="error.get('error_message', [])" t-as="err">
+                                <h3 class="text-danger" t-esc="err"/>
+                            </t>
+                        </div>
+                        <form t-att-action="form_action" t-att-method="form_method">
+                            <h3 class="page-header mt16">
+                                <span t-esc="page_header"/>
+                                <span t-esc="picking_id.name"/>
+                                <br/>
+                                <strong>
+                                    Customer:
+                                    <span t-esc="picking_id.partner_id.name"/>
+                                </strong>
+                            </h3>
+                            <div class="clearfix">
+                                <table class="table table-condensed table-striped"
+                                       style="background-color:white;">
+                                    <tr>
+                                        <th></th>
+                                        <th class="text-center">Item Description</th>
+                                        <th class="text-center">To Do</th>
+                                        <th class="text-center">Done</th>
+                                    </tr>
+                                    <tr t-foreach="picking_id.pack_operation_product_ids"
+                                        t-as="pack_operation">
+                                        <td>
+                                            <img style="display:block; width:100px;height:100px;"
+                                                 t-attf-src="data:image/jpeg;base64,#{pack_operation.product_id.image_medium}"
+                                                 class="img img-responsive img-rounded"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="pack_operation.product_id.name"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="pack_operation.product_qty"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="pack_operation.qty_done"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <button class="btn
+                                           btn-default
+                                           btn-primary
+                                           mb32
+                                           a-submit
+                                           a-submit-disable
+                                           a-submit-loading"
+                                    type="submit"
+                                    name="submit"
+                            >
+                                <span>Done</span>
+                            </button>
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <input type="hidden" name="picking_id" t-att-value="picking_id.id"/>
+                        </form>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</openerp>
