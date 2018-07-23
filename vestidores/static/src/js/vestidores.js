@@ -142,6 +142,7 @@ $(document).ready(function() {
   });
 
   $('.onSubmitVoice').click(function(e){
+    e.preventDefault();
     var id_form = $(this).closest("form").serialize();
     var vestidor = $('input[name="vestidor_name"]', id_form).val();
     var ticket = $('input[name="cola_vestidor_name"]', id_form).val();
