@@ -33,9 +33,9 @@
 									<input type="hidden" name="cliente_nombre" t-att-value="sale_rental.partner_id.name" />
 									<input type="hidden" name="producto_ids" t-att-value="sale_rental.rental_product_id.id" />
 									<input type="hidden" name="sale_rental_id" t-att-value="sale_rental.id" />
-									<!-- <input type="hidden" name="redirect_to" value="/rentals"/> -->
+									<input type="hidden" name="redirect_to" value="/rentals"/>
 									<input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-									<button class="btn btn-primary pull-right onSubmitRentals" type="button" name="sale_rental_id" t-att-value="sale_rental.id">
+									<button class="btn btn-primary pull-right onSubmitMyRental" type="button" name="sale_rental_id" t-att-value="sale_rental.id">
 										<span>Asignar Cola</span>
 									</button>
 								</form>

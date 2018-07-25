@@ -84,10 +84,15 @@ class webVestidores(http.Controller):
             'producto_ids': [(4, [int(post.get('producto_ids'))])],
             'date_start': date.today(),
         })
+        print '#####################'
+        print post.get('cliente_id')
+        print post.get('cliente_nombre')
+        print post.get('producto_ids')
+        print post.get('sale_rental_id')
         sale_rental = request.env['sale.rental'].browse(int(post.get('sale_rental_id'))).write(
             {'is_queued': True}
         )
-        return request.redirect('/my_rental')
+        return request.redirect(post.get('redirect_to'))
         
     def validate_partner(self, partner_vat, post):
         error = dict()
@@ -183,10 +188,6 @@ class webVestidores(http.Controller):
             'vestidores_ids': post.get('vestidor_id'),
             'colas_vestidores_ids': post.get('cola_vestidor_id'),
         })
-        print post.get('vestidor_id')
-        print post.get('vestidor_name')
-        print item_cola.vestidores_ids.name
-        print post.get('cola_vestidor_name')
         update_occupation = request.env['bridetobe.vestidores'].browse(
             int(post.get('vestidor_id'))).write({'occupation': True})
         update_encolado = request.env['bridetobe.colas.vestidores'].browse(
@@ -243,7 +244,6 @@ class webVestidores(http.Controller):
     @http.route(['/views_tv'], type='http', auth="public", website=True )
     def index_dressing_room(self, **kw):
         items_colas = request.env['items.colas'].search([])
-        
         return request.render('vestidores.page_queue_tv', {
             'items_colas': items_colas
             })
