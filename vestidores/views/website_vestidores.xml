@@ -98,7 +98,7 @@
                                                                         <span style="color: green; font-weight: 600;">Disponible</span>
                                                                     </div>
                                                                     <div class="col-md-6">
-                                                                        <button type="submit" class="btn btn-primar onSubmitVoice">Asignar</button>
+                                                                        <button type="submit" class="btn btn-primar">Asignar</button>
                                                                         <button type="button" class="btn btn-warning" data-dismiss="modal">Cerrar</button>
                                                                     </div>
                                                                 </div>
@@ -207,7 +207,7 @@
                                                                         <span style="color: green; font-weight: 600;">Disponible</span>
                                                                     </div>
                                                                     <div class="col-md-6">
-                                                                        <button type="submit" class="btn btn-primary onSubmitVoice">Asignar</button>
+                                                                        <button type="submit" class="btn btn-primary">Asignar</button>
                                                                         <button type="button" class="btn btn-warning" data-dismiss="modal">Cerrar</button>
                                                                     </div>
                                                                 </div>
