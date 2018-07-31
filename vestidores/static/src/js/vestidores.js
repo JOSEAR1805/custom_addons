@@ -27,7 +27,6 @@ $(document).ready(function() {
 
   $(".onSubmitMyRental").on("click", function(e) {
     var id_form = $(this).closest("form");
-    var name = $('input[name="cliente_nombre"]', id_form).val();
     console.log(id_form.serialize());
     swal({
       title: "¿Estás seguro?",
@@ -37,6 +36,18 @@ $(document).ready(function() {
       dangerMode: true
     }).then(willShow => {
       if (willShow) {
+        id_form.submit();
+        swal(name + " se asigno a la cola", {
+          icon: "success"
+        });
+      } else {
+        swal("Se cancelo la asignación");
+      }
+    });
+    return false;
+  });
+
+  /*
         $.ajax({
           url: "/confeccion_queue_assignation",
           data: id_form.serialize(),
@@ -60,7 +71,7 @@ $(document).ready(function() {
       }
     });
     return false;
-  });
+  });*/
 
   $(".onSubmitPartner").on("click", function(e) {
     var id_form = $(this).closest("form");

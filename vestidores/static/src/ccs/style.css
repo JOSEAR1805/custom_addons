@@ -67,9 +67,25 @@
 }
 
 /* estilos para website_vestidores.xml */
-a.btn-vestidores {
+.btn-vestidores {
+  font-size: 22px;
+  
+}
+.btn-bridetobe {
   font-size: 32px;
+}
+.btn-shadow {
+  -webkit-box-shadow: 10px 10px 93px -6px rgba(0,0,0,0.68);
+  -moz-box-shadow: 10px 10px 93px -6px rgba(0,0,0,0.68);
+  box-shadow: 10px 10px 93px -6px rgba(0,0,0,0.68);
 }
 .modal-label-name {
   margin-top: 8px;
+}
+.modal-title {
+  color: black;
+  font-weight: bolder;
+}
+.page-title {
+  color: #656262;
 }

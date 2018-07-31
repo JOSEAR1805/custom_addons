@@ -3,13 +3,7 @@
         <template id="page_queue_test_set_partner_form" name="Buscar Cliente">
             <t t-call="website.layout">
                 <div class="container">
-                    <div style="text-align:right">
-                        <a href="/register_customer" class="btn btn-default btn-primary mb32 btn-vestidores">
-                            <span>Registrar Cliente</span>
-                            <span class="fa fa-plus-square"/>
-                        </a>
-                    </div>
-                    <div style="text-align:center">
+                    <div style="text-align:center; margin-top:10%;">
                         <form t-attf-action="/#{view_id}" method="post">
                             <h1>Cédula/Código o Nombre del Cliente</h1>
                             <div t-attf-class="form-group #{error.get('partner_vat') and 'has-error' or ''}">
@@ -19,10 +13,18 @@
                             <input type="hidden" name="submitted" value="1"/>
                             <input type="hidden" name="view_id" t-att-value="view_id"/>
                             <div class="clearfix">
-                                <button type="submit" class="btn btn-default btn-primary mb32 btn-bridetobe ">
-                                    <span>Buscar</span>
-                                    <span class="fa fa-search"/>
-                                </button>
+                                <div t-if="error.get('partner_vat')" class="col-sm-6">
+                                    <a href="/register_customer" class="btn btn-primary mb32 btn-bridetobe btn-shadow">
+                                        <span>Registrar</span>
+                                        <span class="fa fa-plus-square"/>
+                                    </a>
+                                </div>
+                                <div t-attf-class="#{error.get('partner_vat') and 'col-sm-6' or 'col-sm-12'}">
+                                    <button type="submit" class="btn btn-primary mb32 btn-bridetobe btn-shadow">
+                                        <span>Buscar</span>
+                                        <span class="fa fa-search"/>
+                                    </button>
+                                </div>
                             </div>
                         </form>
                         <table align="center" t-if="error">
@@ -44,10 +46,10 @@
             </t>
         </template>
 
-        <template id="page_queue_test_set_partner_" name="Seleccionar Cliente">
+        <template id="page_queue_test_set_partner" name="Seleccionar Cliente">
             <t t-call="website.layout">
                 <div class="container">
-                    <h3 class="page-header mt16"> Listado de Clientes </h3>
+                    <h3 class="page-header page-title mt16"> Listado de Clientes </h3>
                     <table class="table table-striped table-condensed" style="background-color:white;">
                         <tr name="table-header">
                             <th class="text-left">Nombre</th>
@@ -80,9 +82,9 @@
                                                 <div class="modal-header">
                                                     <div class="row">
                                                         <div class="col-md-6">
-                                                            <h5 class="modal-title">
-                                                                Asignamiento de vestidos
-                                                            </h5>
+                                                            <h4 class="modal-title">
+                                                                Asignamiento de vestidor
+                                                            </h4>
                                                         </div>
                                                         <div class="col-md-6">
                                                             <button type="button" class="close pull-rigth" data-dismiss="modal" aria-label="Close">
@@ -97,23 +99,33 @@
                                                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                                             <input type="hidden" name="cliente_id" t-att-value="partner_id.id"/>
                                                             <input type="hidden" name="cliente_nombre" t-att-value="partner_id.name" />
-                                                            <label>
-                                                                <b style="color: black;">Nombre:</b>
-                                                                <span t-esc="partner_id.name"/>
-                                                            </label>
-                                                            <br/>
-                                                            <label>
-                                                                <b style="color: black;">Nro. de Identificación:</b>
-                                                                <span t-esc="partner_id.vat"/>
-                                                            </label>
-                                                            <br/>
-                                                            <select class="js-example-basic-multiple" name="products[]" multiple="multiple">
-                                                                <t t-foreach="product_ids" t-as="product_id">
-                                                                    <option t-att-value="product_id.id">
-                                                                        <t t-esc="product_id.rental_code + ' - ' + product_id.name" />
-                                                                    </option>
-                                                                </t>
-                                                            </select>
+                                                            <input type="hidden" name="redirect_to" value="/queue_test" />
+                                                            <table>
+                                                                <tr>
+                                                                    <td>
+                                                                        <span class="modal-title">Nombre: </span>
+                                                                        <span t-esc="partner_id.name"/>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <span class="modal-title">Nro. de Identificación: </span>
+                                                                        <span t-esc="partner_id.vat"/>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <span class="modal-title">Seleccionar vestido </span><br/>
+                                                                        <select class="js-example-basic-multiple" name="products[]" multiple="multiple">
+                                                                            <t t-foreach="product_ids" t-as="product_id">
+                                                                                <option t-att-value="product_id.id">
+                                                                                    <t t-esc="product_id.rental_code + ' - ' + product_id.name" />
+                                                                                </option>
+                                                                            </t>
+                                                                        </select>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -134,17 +146,20 @@
 
         <template id="id_partner_data" inherit_id="website_bridetobe.partner_data" name="Registrar Cliente" primary="True">
             <xpath expr="//form" position="attributes">
-                <attribute name="t-attf-action">customer_new</attribute>
+                <attribute name="t-attf-action">save_customer</attribute>
+            </xpath>
+            <xpath expr="//div/h3" position="attributes">
+                <attribute name="class">page-header mt16 page-title</attribute>
             </xpath>
             <xpath expr="//form//button" position="replace">
                 <div>
-                    <a href="/dressing_room" class="btn btn-default btn-primary pull-left mb32 a-submit a-submit-disable a-submit-loading btn-vestidores">
+                    <a href="/queue_test" class="btn btn-primary pull-left btn-vestidores">
                         <span class="fa fa-arrow-left"/>
-                        <span>Vestidores</span>
+                        <span>Volver</span>
                     </a>
-                    <button class="btn btn-default btn-primary pull-right mb32 a-submit a-submit-disable a-submit-loading btn-bridetobe onSubmitPartne" type="submit">
-                        <span>Guardar</span>
-                        <span class="fa fa-arrow-right"/>
+                    <button class="btn btn-primary pull-right btn-vestidores onSubmitPartne" type="submit">
+                        <span>Guardar y Asignar</span>
+                        <span class="fa fa-plus-square"/>
                     </button>
                 </div>
             </xpath>

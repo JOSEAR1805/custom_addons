@@ -1,12 +1,11 @@
 $(document).on("ready", function(){  
-    setTimeout("location.reload();",10000);
-    var ticket = '';
-    var vestidor = '';
-    $('.table-tv tr:last').each(function() {
-        ticket = $(this).find("td span").eq(0).html(); 
-        vestidor = $(this).find("td span").eq(2).html();    
-    });
-
+    //setTimeout("location.reload();",30000);
+    function setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        var expires = "expires="+d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    };
     function getCookie(cname) {
         var name = cname + "=";
         var decodedCookie = decodeURIComponent(document.cookie);
@@ -22,15 +21,43 @@ $(document).on("ready", function(){
         }
         return "";
     };
-    function setCookie(cname, cvalue, exdays) {
-        var d = new Date();
-        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-        var expires = "expires="+d.toUTCString();
-        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-    };
+    var tickets = [];
+    $('.table-tv tr').each(function() {
+        var ticket = $(this).find("td span").eq(0).html();
+        var vestidor = $(this).find("td span").eq(2).html();    
+        if (ticket != undefined && vestidor != undefined){
+            tickets.push({
+                ticket: ticket,
+                vestidor: vestidor
+            }); 
+        }
+    });
+    function checkCookie(cookie, tickets){
+        var cookieTicket = [];
+        var allTickets = [];
+        cookie.map((element) => {
+            cookieTicket.push(element.ticket);
+        })
+        tickets.map((element) => {
+            var aux = cookieTicket.indexOf(element.ticket)
+            if(aux < 0){
+                allTickets.push(element);
+            }
+        })
+        return allTickets;
+    }
     var cookie = getCookie('Ticket');
-    if (cookie !== ticket) {
-        setCookie('Ticket', ticket, 15);
-        responsiveVoice.speak("Numero " + ticket.split('C')[1] + " dirigirse al vestidor " + vestidor.split('V-')[1], "Spanish Latin American Female", {rate: 1.0});
-    };
+    if(cookie){
+        var checks = checkCookie(JSON.parse(cookie), tickets);
+        if (checks.length > 0) {
+            checks.map((element) => {
+                responsiveVoice.speak("Numero " + element.ticket + " dirigirse al vestidor " + element.vestidor, "Spanish Latin American Female", {rate: 1.0});
+            })
+        };
+    }else{
+        tickets.map((element) => {
+            responsiveVoice.speak("Numero " + element.ticket + " dirigirse al vestidor " + element.vestidor, "Spanish Latin American Female", {rate: 1.0});
+        })
+    }
+    setCookie('Ticket', JSON.stringify(tickets), 15);
 });

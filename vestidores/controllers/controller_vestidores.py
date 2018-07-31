@@ -4,32 +4,72 @@ from odoo.http import request
 from datetime import date
 
 class webVestidores(http.Controller):
-    
 
-    @http.route(['/rentals'], type='http', auth="public", website=True)
-    def get_rentals(self):
-        sale_rentals = request.env['sale.rental'].search([
+    @http.route(['/dressing_room'], type='http', auth='public', website=True)
+    def dressing_room_test(self):
+        return request.render('vestidores.vestidores')
+
+    @http.route(['/dressing_room_assignation'], type='http', auth="public", website=True)
+    def get_dressing_room_assignation(self, **post):
+        item_cola = request.env['items.colas'].create({
+            'vestidores_ids': post.get('vestidor_id'),
+            'colas_vestidores_ids': post.get('cola_vestidor_id'),
+        })
+        update_occupation = request.env['bridetobe.vestidores'].browse(
+            int(post.get('vestidor_id'))).write({'occupation': True})
+        update_encolado = request.env['bridetobe.colas.vestidores'].browse(
+            int(post.get('cola_vestidor_id'))).write({'encolado': False})
+        return request.redirect(post.get('redirect_to'))
+
+    def set_queue(self):
+        colas_vestidores = request.env['bridetobe.colas.vestidores'].search([
             '&',
-            '|',
             '&',
-            ('delivery_date','>=',str(date.today())+" 00:00:00"),
-            ('delivery_date','<=',str(date.today())+" 23:59:59"),
-            '&',
-            ('test_date','>=',str(date.today())+" 00:00:00"),
-            ('test_date','<=',str(date.today())+" 23:59:59"),
-            ('is_queued','=',False)
+            ('date_start','>=',str(date.today())+" 00:00:00"),
+            ('date_start','<=',str(date.today())+" 23:59:59"),
+            ('encolado','=','True')
         ])
-        return request.render('vestidores.page_rentals', {'sale_rentals': sale_rentals})
-    
-    def validate_vat(self, vat, post):
+        colas_vestidores_conf = []
+        colas_vestidores_test = []
+        for aux in colas_vestidores:
+            if aux.type_queue == 'making':
+                colas_vestidores_conf.append(aux)
+            elif aux.type_queue == 'test':
+                colas_vestidores_test.append(aux)
+        vestidores = request.env['bridetobe.vestidores'].search([
+            ('status','=','enabled')
+        ])
+        items_colas = request.env['items.colas'].search([])
+        render_values = {
+            'colas_vestidores_conf': colas_vestidores_conf,
+            'colas_vestidores_test': colas_vestidores_test,
+            'vestidores': vestidores,
+            'items_colas': items_colas
+        }
+        return render_values
+
+    @http.route(['/queue_making'], type='http', auth="public", website=True)
+    def get_queue_making(self):
+        values = self.set_queue()
+        return request.render('vestidores.page_queue_making', values)
+
+    @http.route(['/queue_test'], type='http', auth="public", website=True)
+    def get_queue_test(self):
+        values = self.set_queue()
+        return request.render('vestidores.page_queue_test', values)
+
+    def validate_customer(self, customer, post):
         res_partner = None
         error = dict()
         error_message = []
         sale_rentals = []
         if 'submitted' in post:
-            if post.get('vat'):
-                res_partner = request.env['res.partner'].sudo().search([('vat', '=', vat)])
-
+            if post.get('customer'):
+                res_partner = request.env['res.partner'].sudo().search([
+                    '|',
+                    ('vat', '=', customer),
+                    ('customer_code','=', customer)
+                ])
                 sale_rentals = request.env['sale.rental'].search([
                     '&',
                     '&',
@@ -44,14 +84,13 @@ class webVestidores(http.Controller):
                     ('is_queued','=',False)
                 ])
                 if not res_partner:
-                    error['vat'] = 'error'
+                    error['customer'] = 'error'
                     error_message.append(_('Número de Identificación no esta registrado'))
-
                 elif res_partner and not sale_rentals:
-                    error['vat'] = 'error'
+                    error['customer'] = 'error'
                     error_message.append(_('Número de Identificación no posee cita para hoy'))
             else:
-                    error['vat'] = 'missing'
+                    error['customer'] = 'missing'
                     error_message.append(_('Debe Ingresar su Número de Identificación'))
         if error_message:
             error['error_message'] = error_message
@@ -63,37 +102,44 @@ class webVestidores(http.Controller):
         }
         return render_values
 
-    @http.route(['/my_rental'], type='http', auth="public", methods=['GET'], website=True)
-    def get_my_rental(self, **get):
+    @http.route(['/quotes'], type='http', auth="public", methods=['GET'], website=True)
+    def quotes(self, **get):
         view_id = request.httprequest.full_path.replace('/', '').replace('?', '')
-        return request.render('vestidores.page_my_rental_form', {'error': dict(), 'view_id': view_id})
+        return request.render('vestidores.page_quotes_form', {'error': dict(), 'view_id': view_id})
 
-    @http.route(['/my_rental'], type='http', auth="public", methods=['POST'], website=True, csrf=True)
-    def get_vat(self, **post):
-        render_values = self.validate_vat(post.get('vat'), post)
+    @http.route(['/quotes'], type='http', auth="public", methods=['POST'], website=True, csrf=True)
+    def get_customer(self, **post):
+        render_values = self.validate_customer(post.get('customer'), post)
         if render_values['error']:
-            return request.render('vestidores.page_my_rental_form', render_values)
+            return request.render('vestidores.page_quotes_form', render_values)
         else:
-            return request.render('vestidores.page_my_rental', render_values)
+            return request.render('vestidores.page_quotes', render_values)
 
-    @http.route(['/confeccion_queue_assignation'], type='http', auth="public", website=True)
-    def get_confeccion_queue_assignation(self, **post):
+    @http.route(['/take_turn_in_queue'], type='http', auth="public", website=True)
+    def take_turn_in_queue(self, **post):
         colas_vestidores = request.env['bridetobe.colas.vestidores'].create({
             'sale_rental_id': post.get('sale_rental_id'),
             'cliente_id': post.get('cliente_id'),
             'producto_ids': [(4, [int(post.get('producto_ids'))])],
             'date_start': date.today(),
         })
-        print '#####################'
-        print post.get('cliente_id')
-        print post.get('cliente_nombre')
-        print post.get('producto_ids')
-        print post.get('sale_rental_id')
         sale_rental = request.env['sale.rental'].browse(int(post.get('sale_rental_id'))).write(
             {'is_queued': True}
         )
         return request.redirect(post.get('redirect_to'))
         
+    @http.route(['/modista'], type='http', auth="public", website=True)
+    def get_modista(self):
+        items_colas = request.env['items.colas'].search([])
+        return request.render('vestidores.page_modistas', {'items_colas': items_colas})
+
+    @http.route(['/views_tv'], type='http', auth="public", website=True )
+    def index_dressing_room(self, **kw):
+        items_colas = request.env['items.colas'].search([])
+        return request.render('vestidores.page_queue_tv', {
+            'items_colas': items_colas
+        })
+
     def validate_partner(self, partner_vat, post):
         error = dict()
         error_message = []
@@ -128,18 +174,18 @@ class webVestidores(http.Controller):
         }
         return render_values
 
-    @http.route(['/queue_test'], type='http', auth="public", methods=['GET'], website=True)
-    def get_queue_test(self, **get):
+    @http.route(['/assignment_to_test'], type='http', auth="public", methods=['GET'], website=True)
+    def assignment_to_test(self, **get):
         view_id = request.httprequest.full_path.replace('/', '').replace('?', '')
         return request.render('vestidores.page_queue_test_set_partner_form', {'error': dict(), 'view_id': view_id})
 
-    @http.route(['/queue_test'], type='http', auth="public", methods=['POST'], website=True, csrf=True)
-    def get_seller(self, **post):
+    @http.route(['/assignment_to_test'], type='http', auth="public", methods=['POST'], website=True, csrf=True)
+    def get_partner(self, **post):
         render_values = self.validate_partner(post.get('partner_vat'), post)
         if render_values['error']:
             return request.render('vestidores.page_queue_test_set_partner_form', render_values)
         else:
-            return request.render('vestidores.page_queue_test_set_partner_', render_values)
+            return request.render('vestidores.page_queue_test_set_partner', render_values)
 
     @http.route(['/test_queue_assignation'], type='http', auth="public", website=True)
     def get_test_queue_assignation(self, **post):
@@ -149,9 +195,68 @@ class webVestidores(http.Controller):
             'type_queue': 'test',
             'date_start': date.today(),
         })
-        return request.redirect('/dressing_room')
+        return request.redirect(post.get('redirect_to'))
+        
+    @http.route(['/register_customer'], type='http', auth='public', website=True, methods=['GET'])
+    def render_register_customer(self, **get):
+        error = dict()
+        error_message = []
+        partner_ids = []
+        qweb_template = 'vestidores.id_partner_data'
 
-    @http.route(['/dressing_room'], type='http', auth="public", website=True)
+        return request.render(qweb_template,
+                              {'error': error,
+                               'partner_temp': get,
+                               'country_ids': request.env['res.country'].sudo().search([]),
+                               'form_method': 'post',
+                               'seller': request.env['hr.employee'],
+                               'view_id': get.get('view_id'),
+                               'partner_ids': request.env['res.partner'],
+                               'countries': request.env['res.country'].sudo().search([]),
+                               'partner': request.env['res.partner']})
+
+    @http.route(['/save_customer'], type='http', auth="public", website=True)
+    def get_customer_new(self, **post):
+        clientes = request.env['res.partner'].create({
+            'name': post.get('name'),
+            'customer_code': post.get('customer_code'),
+            'mobile': post.get('mobile'),
+            'phone': post.get('phone'),
+            'vat': post.get('vat'),
+            'email': post.get('email'),
+            'street': post.get('street'),
+            'city': post.get('city'),
+            'country_id' : int(post.get('country_id'))
+        })
+        return request.redirect('/queue_test')
+
+    @http.route(['/end_process_dressing_room'], type='http', auth="public", website=True)
+    def get_end_process_dressing_room(self, **post):
+        update_occupation_vestidor = request.env['bridetobe.vestidores'].browse(
+            int(post.get('vestidor_id'))).write({'occupation': False})
+        update_ticket_cola_vestidor = request.env['bridetobe.colas.vestidores'].browse(
+            int(post.get('cola_vetidor_id'))).write({'state_ticket': 'closed'})
+        delete_item = request.env['items.colas'].browse(int(post.get('item_id'))).unlink()
+        return request.redirect(post.get('redirect_to'))
+
+# ----------------------PRUEBAS DE JOSE ARTIGAS---------------------------
+
+    @http.route(['/quotes_test'], type='http', auth="public", website=True)
+    def quotes_test(self):
+        sale_rentals = request.env['sale.rental'].search([
+            '&',
+            '|',
+            '&',
+            ('delivery_date','>=',str(date.today())+" 00:00:00"),
+            ('delivery_date','<=',str(date.today())+" 23:59:59"),
+            '&',
+            ('test_date','>=',str(date.today())+" 00:00:00"),
+            ('test_date','<=',str(date.today())+" 23:59:59"),
+            ('is_queued','=',False)
+        ])
+        return request.render('vestidores.page_quotes_test', {'sale_rentals': sale_rentals})
+
+    @http.route(['/dressing_room_test'], type='http', auth="public", website=True)
     def get_dressing_room(self):
         colas_vestidores_conf = request.env['bridetobe.colas.vestidores'].search([
             '&',
@@ -181,69 +286,3 @@ class webVestidores(http.Controller):
             'vestidores': vestidores,
             'items_colas': items_colas
         })
-
-    @http.route(['/dressing_room_assignation'], type='http', auth="public", website=True)
-    def get_dressing_room_assignation(self, **post):
-        item_cola = request.env['items.colas'].create({
-            'vestidores_ids': post.get('vestidor_id'),
-            'colas_vestidores_ids': post.get('cola_vestidor_id'),
-        })
-        update_occupation = request.env['bridetobe.vestidores'].browse(
-            int(post.get('vestidor_id'))).write({'occupation': True})
-        update_encolado = request.env['bridetobe.colas.vestidores'].browse(
-            int(post.get('cola_vestidor_id'))).write({'encolado': False})
-        return request.redirect(post.get('redirect_to'))
-
-    @http.route(['/end_process_dressing_room'], type='http', auth="public", website=True)
-    def get_end_process_dressing_room(self, **post):
-        update_occupation_vestidor = request.env['bridetobe.vestidores'].browse(
-            int(post.get('vestidor_id'))).write({'occupation': False})
-        update_ticket_cola_vestidor = request.env['bridetobe.colas.vestidores'].browse(
-            int(post.get('cola_vetidor_id'))).write({'state_ticket': 'closed'})
-        delete_item = request.env['items.colas'].browse(int(post.get('item_id'))).unlink()
-        return request.redirect('/dressing_room')
-
-    @http.route(['/modista'], type='http', auth="public", website=True)
-    def get_modista(self):
-        items_colas = request.env['items.colas'].search([])
-        return request.render('vestidores.page_modistas', {'items_colas': items_colas})
-
-    @http.route(['/register_customer'], type='http', auth='public', website=True, methods=['GET'])
-    def render_register_customer(self, **get):
-        error = dict()
-        error_message = []
-        partner_ids = []
-        qweb_template = 'vestidores.id_partner_data'
-
-        return request.render(qweb_template,
-                              {'error': error,
-                               'partner_temp': get,
-                               'country_ids': request.env['res.country'].sudo().search([]),
-                               'form_method': 'post',
-                               'seller': request.env['hr.employee'],
-                               'view_id': get.get('view_id'),
-                               'partner_ids': request.env['res.partner'],
-                               'countries': request.env['res.country'].sudo().search([]),
-                               'partner': request.env['res.partner']})
-
-    @http.route(['/customer_new'], type='http', auth="public", website=True)
-    def get_customer_new(self, **post):
-        clientes = request.env['res.partner'].create({
-            'name': post.get('name'),
-            'customer_code': post.get('customer_code'),
-            'mobile': post.get('mobile'),
-            'phone': post.get('phone'),
-            'vat': post.get('vat'),
-            'email': post.get('email'),
-            'street': post.get('street'),
-            'city': post.get('city'),
-            'country_id' : int(post.get('country_id'))
-        })
-        return request.redirect('/dressing_room')
-
-    @http.route(['/views_tv'], type='http', auth="public", website=True )
-    def index_dressing_room(self, **kw):
-        items_colas = request.env['items.colas'].search([])
-        return request.render('vestidores.page_queue_tv', {
-            'items_colas': items_colas
-            })

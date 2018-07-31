@@ -12,22 +12,7 @@
         </template>
 
         <template id="homepage_inherit" inherit_id="website_bridetobe.homepage" name="homepage_inherit">
-            <xpath expr="//div/div[1]" position="before">
-                <div class="col-xs-12">
-                    <div class="col-sm-6">
-                        <a class="btn btn-primary" href="/my_rental">
-
-                            <span>Clientes</span>
-                        </a>
-                    </div>
-                    <div class="col-sm-6">
-                        <a class="btn btn-primary" href="/modista">
-                            <span>Modistas</span>
-                        </a>
-                    </div>
-                </div>
-            </xpath>
-            <xpath expr="//div/div[2]/div[2]/a" position="attributes">
+            <xpath expr="//div/div[1]/div[2]/a" position="attributes">
                 <attribute name="href">/dressing_room</attribute>
             </xpath>
         </template>

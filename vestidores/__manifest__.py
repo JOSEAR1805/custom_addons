@@ -32,12 +32,14 @@
         'data/ir_sequence_data.xml',
         'views/view_vestidores.xml',
         'views/website_main.xml',
-        'views/website_rentals.xml',
-        'views/website_my_rental.xml',
-        'views/website_vestidores.xml',
         'views/website_modista.xml',
         'views/website_partner.xml',
-        'views/website_queue_tv.xml'
+        'views/website_queue_making.xml',
+        'views/website_queue_test.xml',
+        'views/website_queue_tv.xml',
+        'views/website_quotes.xml',
+        'views/website_vestidores_test.xml',
+        'views/website_vestidores.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
