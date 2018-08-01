@@ -203,21 +203,24 @@ class webVestidores(http.Controller):
         error_message = []
         partner_ids = []
         qweb_template = 'vestidores.id_partner_data'
+        product_ids = request.env['product.template'].sudo().search([('rental_code','!=','')])
 
-        return request.render(qweb_template,
-                              {'error': error,
-                               'partner_temp': get,
-                               'country_ids': request.env['res.country'].sudo().search([]),
-                               'form_method': 'post',
-                               'seller': request.env['hr.employee'],
-                               'view_id': get.get('view_id'),
-                               'partner_ids': request.env['res.partner'],
-                               'countries': request.env['res.country'].sudo().search([]),
-                               'partner': request.env['res.partner']})
+        return request.render(qweb_template,{
+            'error': error,
+            'partner_temp': get,
+            'country_ids': request.env['res.country'].sudo().search([]),
+            'form_method': 'post',
+            'seller': request.env['hr.employee'],
+            'view_id': get.get('view_id'),
+            'partner_ids': request.env['res.partner'],
+            'countries': request.env['res.country'].sudo().search([]),
+            'partner': request.env['res.partner'],
+            'product_ids': product_ids
+        })
 
     @http.route(['/save_customer'], type='http', auth="public", website=True)
     def get_customer_new(self, **post):
-        clientes = request.env['res.partner'].create({
+        customers = request.env['res.partner'].create({
             'name': post.get('name'),
             'customer_code': post.get('customer_code'),
             'mobile': post.get('mobile'),
@@ -228,6 +231,19 @@ class webVestidores(http.Controller):
             'city': post.get('city'),
             'country_id' : int(post.get('country_id'))
         })
+        res_partners = request.env['res.partner'].search([
+            '&',
+            ('create_date','>=',str(date.today())+" 00:00:00"),
+            ('create_date','<=',str(date.today())+" 23:59:59")
+        ])
+        for res_partner in res_partners:
+            if res_partner.vat == post.get('vat') and res_partner.customer_code == post.get('customer_code'):
+                colas_vestidores = request.env['bridetobe.colas.vestidores'].create({
+                    'cliente_id': res_partner.id,
+                    'producto_ids': [(6, 0, [int(x) for x in request.httprequest.form.getlist('products[]')])],
+                    'type_queue': 'test',
+                    'date_start': date.today(),
+                })
         return request.redirect('/queue_test')
 
     @http.route(['/end_process_dressing_room'], type='http', auth="public", website=True)

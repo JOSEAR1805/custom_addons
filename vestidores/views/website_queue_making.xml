@@ -132,14 +132,14 @@
                                             <span>Asignar Vestidor</span>
                                         </button>
                                     </td>
-                                    <div class="modal fade" t-att-id="cola_vestidor.id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                     <div class="modal fade" t-att-id="cola_vestidor.id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
                                             <form action="/dressing_room_assignation" method="post" t-att-id="cola_vestidor.id">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <div class="row">
                                                             <div class="col-md-6">
-                                                                <h5 class="modal-title">Asignamiento de vestidores</h5>
+                                                                <h4 class="modal-title">Asignamiento de vestidores</h4>
                                                             </div>
                                                             <div class="col-md-6">
                                                                 <button type="button" class="close pull-rigth" data-dismiss="modal" aria-label="Close">
@@ -189,16 +189,16 @@
                                                                 <span style="color: green; font-weight: 600;">Disponible</span>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                <button type="submit" class="btn btn-primar">Asignar</button>
+                                                                <button type="submit" class="btn btn-primary">Asignar</button>
                                                                 <button type="button" class="btn btn-warning" data-dismiss="modal">Cerrar</button>
                                                             </div>
                                                         </div>
-
                                                     </div>
                                                 </div>
                                             </form>
                                         </div>
                                     </div>
+                                   
                                 </tr>
                             </table>
                         </div>

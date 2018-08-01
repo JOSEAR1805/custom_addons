@@ -116,7 +116,7 @@
                                                                 <tr>
                                                                     <td>
                                                                         <span class="modal-title">Seleccionar vestido </span><br/>
-                                                                        <select class="js-example-basic-multiple" name="products[]" multiple="multiple">
+                                                                        <select class="js-example-basic-multiple form-control" name="products[]" multiple="multiple">
                                                                             <t t-foreach="product_ids" t-as="product_id">
                                                                                 <option t-att-value="product_id.id">
                                                                                     <t t-esc="product_id.rental_code + ' - ' + product_id.name" />
@@ -151,8 +151,20 @@
             <xpath expr="//div/h3" position="attributes">
                 <attribute name="class">page-header mt16 page-title</attribute>
             </xpath>
+            <xpath expr="//div/form/div[12]" position="after">
+                <div class="col-sm-12">
+                    <label class="control-label">Seleccionar vestido(s)</label>
+                    <select class="js-example-basic-multiple form-control" name="products[]" multiple="multiple">
+                        <t t-foreach="product_ids" t-as="product_id">
+                            <option t-att-value="product_id.id">
+                                <t t-esc="product_id.rental_code + ' - ' + product_id.name" />
+                            </option>
+                        </t>
+                    </select>
+                </div>
+            </xpath>
             <xpath expr="//form//button" position="replace">
-                <div>
+                <div style="margin-top: 15px;">
                     <a href="/queue_test" class="btn btn-primary pull-left btn-vestidores">
                         <span class="fa fa-arrow-left"/>
                         <span>Volver</span>
@@ -163,14 +175,6 @@
                     </button>
                 </div>
             </xpath>
-        </template>
-
-        <template id="test" inherit_id="website_bridetobe.set_partner" primary="True">
-            <xpath expr="//form" position="attributes">
-                <attribute name="t-attf-action">#{view_id}</attribute>
-            </xpath>
-            <xpath expr="//form/table" position="replace"/>
-            <xpath expr="//form/input[@name='seller']" position="replace"/>
         </template>
     </data>
 </odoo>
