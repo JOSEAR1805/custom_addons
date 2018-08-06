@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
+from datetime import time, date, datetime, timedelta
 
 class bridetobeColasVestidores(models.Model):
     _name = 'bridetobe.colas.vestidores'
@@ -17,7 +18,17 @@ class bridetobeColasVestidores(models.Model):
     cliente_id = fields.Many2one("res.partner", string="Cliente")
     modista_id = fields.Many2one(related="sale_rental_id.modista", string="Modista")
     producto_ids = fields.Many2many("product.template", string="Productos")
-    date_start = fields.Date(string='Fecha de asignacion')
+    date_start = fields.Datetime(string='Fecha de asignacion')
+    time_elapsed = fields.Char(compute='_compute_time_elapsed', string='tiempo transcurrido', readonly=True)
+
+    @api.one
+    @api.depends('date_start')
+    def _compute_time_elapsed(self):
+        date_start = self.date_start.split(' ')[1]
+        today = datetime.today().strftime('%H:%M:%S')
+        h1 = datetime.strptime(date_start, "%H:%M:%S")
+        h2 = datetime.strptime(today, "%H:%M:%S")
+        self.time_elapsed = str(h2 - h1)
 
     @api.model
     def create(self, vals): 

@@ -2,9 +2,10 @@
   <data>
     <template id="page_modistas" name="Modistas">
       <t t-call="website.layout">
+        <script type="text/javascript" src="/vestidores/static/src/js/audio_modista.js"></script>
         <div class="container">
           <h2 class="page-header mt16 page-title"> Modistas </h2>
-          <table class="table table-striped table-condensed" style="background-color:white;">
+          <table class="table table-striped table-condensed table-modista" style="background-color:white;">
             <tr name="table-header">
               <th class="text-left">Modista</th>
               <th class="text-left">Vestidor</th>
@@ -23,9 +24,8 @@
                   <span t-esc="item_cola.colas_vestidores_ids.cliente_id.name"/>
                 </td>
                 <td>
-                  <t t-foreach="item_cola.colas_vestidores_ids.producto_ids" t-as="product_ids">
-                      <span t-esc="product_ids.name"/>
-                      <br/>
+                  <t t-foreach="item_cola.colas_vestidores_ids.producto_ids" t-as="producto_id">
+                    <span t-esc="producto_id.name"/><br/>
                   </t>
                 </td>
               </tr>

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import http, _
 from odoo.http import request
-from datetime import date
+from datetime import time, date, datetime, timedelta
 
 class webVestidores(http.Controller):
 
@@ -16,7 +16,7 @@ class webVestidores(http.Controller):
             'colas_vestidores_ids': post.get('cola_vestidor_id'),
         })
         update_occupation = request.env['bridetobe.vestidores'].browse(
-            int(post.get('vestidor_id'))).write({'occupation': True})
+            int(post.get('vestidor_id'))).write({'occupation': True, 'action_time': date.today()})
         update_encolado = request.env['bridetobe.colas.vestidores'].browse(
             int(post.get('cola_vestidor_id'))).write({'encolado': False})
         return request.redirect(post.get('redirect_to'))
@@ -100,6 +100,7 @@ class webVestidores(http.Controller):
             'res_partner': res_partner,
             'view_id': post.get('view_id'),
         }
+
         return render_values
 
     @http.route(['/quotes'], type='http', auth="public", methods=['GET'], website=True)
@@ -121,7 +122,7 @@ class webVestidores(http.Controller):
             'sale_rental_id': post.get('sale_rental_id'),
             'cliente_id': post.get('cliente_id'),
             'producto_ids': [(4, [int(post.get('producto_ids'))])],
-            'date_start': date.today(),
+            'date_start': datetime.today(),
         })
         sale_rental = request.env['sale.rental'].browse(int(post.get('sale_rental_id'))).write(
             {'is_queued': True}
@@ -193,7 +194,7 @@ class webVestidores(http.Controller):
             'cliente_id': post.get('cliente_id'),
             'producto_ids': [(6, 0, [int(x) for x in request.httprequest.form.getlist('products[]')])],
             'type_queue': 'test',
-            'date_start': date.today(),
+            'date_start': datetime.today(),
         })
         return request.redirect(post.get('redirect_to'))
         
@@ -249,7 +250,7 @@ class webVestidores(http.Controller):
     @http.route(['/end_process_dressing_room'], type='http', auth="public", website=True)
     def get_end_process_dressing_room(self, **post):
         update_occupation_vestidor = request.env['bridetobe.vestidores'].browse(
-            int(post.get('vestidor_id'))).write({'occupation': False})
+            int(post.get('vestidor_id'))).write({'occupation': False, 'action_time': date.today()})
         update_ticket_cola_vestidor = request.env['bridetobe.colas.vestidores'].browse(
             int(post.get('cola_vetidor_id'))).write({'state_ticket': 'closed'})
         delete_item = request.env['items.colas'].browse(int(post.get('item_id'))).unlink()

@@ -11,12 +11,12 @@
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <div class="col-md-1" t-foreach="vestidores" t-as="vestidor">
+                            <div class="col-xs-4 col-md-2 " t-foreach="vestidores" t-as="vestidor">
                                 <div class="form-check" t-if="vestidor.occupation">
-                                    <button class="btn btn-success" data-toggle="modal" t-att-data-target="'#' + str(vestidor.id)" type="button">
+                                    <button class="btn btn-danger bvs" data-toggle="modal" t-att-data-target="'#' + str(vestidor.id)" type="button">
                                         <label class="form-check-label">
                                             <span t-esc="vestidor.name"/><br/>
-                                            <span>ocupado</span>
+                                            <span t-esc="vestidor.time_elapsed_dressing_room"/>
                                         </label>
                                     </button>
                                     <div class="modal fade" t-att-id="vestidor.id" tabindex="-1" role="dialog" aria-labelledby="modalVestidor" aria-hidden="true">
@@ -84,11 +84,10 @@
                                 </div>
                                 <div class="form-check" t-else="">
                                     <div>
-                                        <button class="btn btn-danger" disabled="">
+                                        <button class="btn btn-success bvs">
                                             <label class="form-check-label">
-                                                <span t-esc="vestidor.name"/>
-                                                <br/>
-                                                <span>ocupado</span>
+                                                <span t-esc="vestidor.name"/><br/>
+                                                <span t-esc="vestidor.time_elapsed_dressing_room"/><br/>
                                             </label>
                                         </button>
                                     </div>
@@ -109,6 +108,7 @@
                                     <th class="text-left">Cliente</th>
                                     <th class="text-left">Modista</th>
                                     <th class="text-left">Vestido</th>
+                                    <th class="text-left">Tiempo Transcurrido</th>
                                     <th></th>
                                 </tr>
                                 <tr t-foreach="colas_vestidores_conf" t-as="cola_vestidor">
@@ -126,6 +126,9 @@
                                             <span t-esc="product_ids.name"/>
                                             <br/>
                                         </t>
+                                    </td>
+                                    <td>
+                                        <span t-esc="cola_vestidor.time_elapsed"/>
                                     </td>
                                     <td>
                                         <button class="btn btn-primary pull-right" data-toggle="modal" t-att-data-target="'#' + str(cola_vestidor.id)" type="button">

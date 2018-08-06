@@ -3,7 +3,7 @@
     <data>
         <template id="page_queue_tv" name="Colas">
             <t t-call="website.layout">
-                <script type="text/javascript" src="/vestidores/static/src/js/tv.js"></script>
+                <script type="text/javascript" src="/vestidores/static/src/js/audio_tv.js"></script>
                 <div class="container">
                     <div class="row" >
                         <div class="col-md-6">
