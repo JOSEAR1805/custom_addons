@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
+from datetime import time, date, datetime, timedelta
 from odoo.exceptions import ValidationError
 
 class bridetobeVestidores(models.Model):
@@ -10,6 +11,16 @@ class bridetobeVestidores(models.Model):
     status = fields.Selection([('enabled', 'Habilitado'),('disabled', 'Deshabilitado')], string='Estatus', required=True)
     description = fields.Text()
     occupation = fields.Boolean(string='Ocupación', default=False)
+    time_elapsed_dressing_room = fields.Char(compute='_compute_time_elapsed_dressing_room', string='tiempo transcurrido', readonly=True)
+
+    @api.one
+    @api.depends('write_date')
+    def _compute_time_elapsed_dressing_room(self):
+        write_date = self.write_date.split(' ')[1]
+        today = datetime.today().strftime('%H:%M:%S')
+        h1 = datetime.strptime(write_date, "%H:%M:%S")
+        h2 = datetime.strptime(today, "%H:%M:%S")
+        self.time_elapsed_dressing_room = str(h2 - h1)
 
     @api.constrains('name')
     def _name_not_number(self):

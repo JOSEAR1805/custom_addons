@@ -4,10 +4,14 @@
             <xpath expr="." position="inside">
                 <link rel="stylesheet" href="/vestidores/static/src/ccs/select2.min.css"/>
                 <link rel="stylesheet" href="/vestidores/static/src/ccs/style.css"/>
+                <link rel="stylesheet" href="/vestidores/static/src/ccs/jquery-ui.css"/>
+
                 <script type="text/javascript" src="/vestidores/static/src/js/sweetalert.min.js"></script>
                 <script type="text/javascript" src="/vestidores/static/src/js/select2.min.js"></script>
                 <script type="text/javascript" src="/vestidores/static/src/js/responsivevoice.js"></script>
                 <script type="text/javascript" src="/vestidores/static/src/js/vestidores.js"></script>
+                <script type="text/javascript" src="/vestidores/static/src/js/jquery-ui.js"></script>
+
             </xpath>
         </template>
 

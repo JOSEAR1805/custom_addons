@@ -85,7 +85,15 @@
 .modal-title {
   color: black;
   font-weight: bolder;
+  text-align: left;
+}
+.modal-table {
+  text-align: left;
 }
 .page-title {
   color: #656262;
+  text-align: left;
+}
+.bvs {
+  font-size: 18px;
 }
