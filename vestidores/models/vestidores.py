@@ -20,11 +20,10 @@ class bridetobeVestidores(models.Model):
         h1 = datetime.strptime(write_date, "%H:%M:%S")
         h2 = datetime.strptime(today, "%H:%M:%S")
         resultado = str(h2 - h1)
-        aux = datetime.strptime(resultado, "%I:%M:%S")
         if len(resultado) > 8:
-            self.time_elapsed_dressing_room = str(aux)
+            self.time_elapsed_dressing_room = "23:59:59"
         else:
-            self.time_elapsed_dressing_room = resultado
+            self.time_elapsed_dressing_room = str(h2 - h1)
 
     @api.constrains('name')
     def _name_not_number(self):
