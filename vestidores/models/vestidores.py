@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from odoo import models, fields, api
 from datetime import time, date, datetime, timedelta
 from odoo.exceptions import ValidationError
@@ -20,7 +19,14 @@ class bridetobeVestidores(models.Model):
         today = datetime.today().strftime('%H:%M:%S')
         h1 = datetime.strptime(write_date, "%H:%M:%S")
         h2 = datetime.strptime(today, "%H:%M:%S")
-        self.time_elapsed_dressing_room = str(h2 - h1)
+        resultado = str(h2 - h1)
+        self.time_elapsed_dressing_room = resultado
+
+        # aux = datetime.strptime(resultado, "%I:%M:%S")
+        # if len(resultado) > 8:
+        #     self.time_elapsed_dressing_room = str(aux)
+        # else:
+        #     self.time_elapsed_dressing_room = resultado
 
     @api.constrains('name')
     def _name_not_number(self):

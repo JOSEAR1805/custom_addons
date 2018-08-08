@@ -94,6 +94,9 @@
   color: #656262;
   text-align: left;
 }
-.bvs {
-  font-size: 18px;
+.btn-title-lv {
+  font-size: 27px;
+}
+.btn-hora-sv {
+  font-size:16px;                                          
 }

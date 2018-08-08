@@ -13,11 +13,9 @@
                         <div class="col-md-12">
                             <div class="col-xs-4 col-md-2" t-foreach="vestidores" t-as="vestidor">
                                 <div class="form-check" t-if="vestidor.occupation">
-                                    <button class="btn btn-danger bvs" data-toggle="modal" t-att-data-target="'#' + str(vestidor.id)" type="button">
-                                        <label class="form-check-label">
-                                            <span t-esc="vestidor.name"/><br/>
-                                            <span t-esc="vestidor.time_elapsed_dressing_room"/>
-                                        </label>
+                                    <button class="btn btn-danger" data-toggle="modal" t-att-data-target="'#' + str(vestidor.id)" type="button">
+                                        <label class="btn-title-lv" t-esc="vestidor.name"/><br/>
+                                        <span  class="btn-hora-sv" t-esc="vestidor.time_elapsed_dressing_room"/>
                                     </button>
                                     <div class="modal fade" t-att-id="vestidor.id" tabindex="-1" role="dialog" aria-labelledby="modalVestidor" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
@@ -85,10 +83,8 @@
                                 <div class="form-check" t-else="">
                                     <div>
                                         <button class="btn btn-success bvs vestidor-droppable" t-att-id="str(vestidor.id)">
-                                            <label class="form-check-label">
-                                                <span t-esc="vestidor.name"/><br/>
-                                                <span t-esc="vestidor.time_elapsed_dressing_room"/>
-                                            </label>
+                                            <label class="btn-title-lv" t-esc="vestidor.name"/><br/>
+                                            <span  class="btn-hora-sv" t-esc="vestidor.time_elapsed_dressing_room"/>
                                         </button>
                                     </div>
                                 </div>
