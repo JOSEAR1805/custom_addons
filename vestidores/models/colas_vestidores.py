@@ -30,9 +30,9 @@ class bridetobeColasVestidores(models.Model):
         h2 = datetime.strptime(today, "%H:%M:%S")
         resultado = str(h2 - h1)
         if len(resultado) > 8:
-            self.time_elapsed_dressing_room = "23:59:59"
+            self.time_elapsed = "23:59:59"
         else:
-            self.time_elapsed_dressing_room = str(h2 - h1)
+            self.time_elapsed = str(h2 - h1)
 
     @api.model
     def create(self, vals): 

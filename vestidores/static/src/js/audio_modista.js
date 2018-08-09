@@ -1,11 +1,13 @@
 $(document).on("ready", function(){  
-    setTimeout("location.reload();",30000);
+    setTimeout("location.reload();", 30000);
+
     function setCookie(cname, cvalue, exdays) {
         var d = new Date();
         d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
         var expires = "expires="+d.toUTCString();
         document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
     };
+
     function getCookie(cname) {
         var name = cname + "=";
         var decodedCookie = decodeURIComponent(document.cookie);
@@ -21,20 +23,6 @@ $(document).on("ready", function(){
         }
         return "";
     };
-    function checkCookie(cookie, aux){
-        var cookieTicket = [];
-        var allTickets = [];
-        cookie.map((element) => {
-            cookieTicket.push(element.aux);
-        })
-        aux.map((element) => {
-            var aux = cookieTicket.indexOf(element.aux)
-            if(aux < 0){
-                allTickets.push(element);
-            }
-        })
-        return allTickets;
-    }
 
     var turno_modista = [];
     $('.table-modista tr').each(function() {
@@ -47,21 +35,34 @@ $(document).on("ready", function(){
             }); 
         }
     });
-    
-    var cookie_modista = getCookie('Turno');
-    if(cookie_modista){
-        var checks = checkCookie(JSON.parse(cookie_modista), turno_modista);
-        if (checks.length > 0) {
-            checks.map((element) => {
+
+    function checkCookie(cookie, modistas){
+        var cookieModista = [];
+        var allModistas = [];
+        cookie.map((element) => {
+            cookieModista.push(element.modista);
+        })
+        modistas.map((element) => {
+            var aux = cookieModista.indexOf(element.modista)
+            if(aux < 0){
+                allModistas.push(element);
+            }
+        })
+        return allModistas;
+    }
+
+    var cookie = getCookie('Turno');
+        if(cookie){
+            var checks = checkCookie(JSON.parse(cookie), turno_modista);
+            if (checks.length > 0) {
+                checks.map((element) => {
+                    responsiveVoice.speak("Modista " + element.modista + " dirigirse al vestidor " + element.vestidor, "Spanish Latin American Female", {rate: 1.0});
+                })
+            };
+        }else{
+            turno_modista.map((element) => {
                 responsiveVoice.speak("Modista " + element.modista + " dirigirse al vestidor " + element.vestidor, "Spanish Latin American Female", {rate: 1.0});
             })
-        };
-    }else{
-        turno_modista.map((element) => {
-            responsiveVoice.speak("Modista " + element.modista + " dirigirse al vestidor " + element.vestidor, "Spanish Latin American Female", {rate: 1.0});
-        })
-    }
+        }
     setCookie('Turno', JSON.stringify(turno_modista), 15);
-
-
 });
