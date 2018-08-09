@@ -3,6 +3,54 @@
     <data>
         <template id="page_queue_test" name="Cola para Pruebas">
             <t t-call="website.layout">
+                <script>
+                    function allowDrop(ev) {
+                        ev.preventDefault();
+                    }
+                    function drag(ev) {
+                        var aux = ev.dataTransfer.setData("text", ev.target.id);
+                    }
+                    function drop(ev) {
+                        ev.preventDefault();
+                        var aux = ev.dataTransfer.getData("text").split('-');
+                        var cola_vestidor = aux[0]
+                        var cliente = aux[1]
+                        var vestidor = $(ev.target).closest("button")[0].id;
+                        var vestidor_name = $(ev.target).closest("button")[0].name;
+                        swal({
+                            title: "¿Estás seguro?",
+                            text: "De asignar cliente: " + cliente + " al vestidor: " + vestidor_name,
+                            icon: "warning",
+                            buttons: true,
+                            dangerMode: true
+                        }).then(willShow => {
+                            if (willShow) {
+                                $.ajax({
+                                    url: '/dressing_room_assignation',
+                                    type: 'POST',
+                                    data: {
+                                        'cola_vestidor_id': cola_vestidor,
+                                        'vestidor_id': vestidor
+                                    },
+                                    dataType: 'json',
+                                    error: function(){
+                                        swal("Ocurrio un Error");
+                                    },
+                                    success:function(data){
+                                        swal("Asignación Exitosa", {
+                                            icon: "success"
+                                        });
+                                        setTimeout(() => {
+                                            location.reload();
+                                        }, 2000);
+                                    }
+                                });
+                            } else {
+                                swal("Asignación cancelada");
+                            }
+                        });
+                    }
+                </script>
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12">
@@ -13,7 +61,7 @@
                         <div class="col-md-12">
                             <div class="col-xs-4 col-md-2" t-foreach="vestidores" t-as="vestidor">
                                 <div class="form-check" t-if="vestidor.occupation">
-                                    <button class="btn btn-danger bvs" data-toggle="modal" t-att-data-target="'#' + str(vestidor.id)" type="button">
+                                    <button class="btn btn-danger bvs" data-toggle="modal" t-att-data-target="'#' + str(vestidor.id)"  type="button">
                                         <label class="btn-title-lv" t-esc="vestidor.name"/><br/>
                                         <span  class="btn-hora-sv" t-esc="vestidor.time_elapsed_dressing_room"/>
                                     </button>
@@ -82,7 +130,7 @@
                                 </div>
                                 <div class="form-check" t-else="">
                                     <div>
-                                        <button class="btn btn-success bvs vestidor-droppable" t-att-id="str(vestidor.id)">
+                                        <button class="btn btn-success bvs" t-att-id="vestidor.id" t-att-name="vestidor.name" ondrop="drop(event)" ondragover="allowDrop(event)">
                                             <label class="btn-title-lv" t-esc="vestidor.name"/><br/>
                                             <span  class="btn-hora-sv" t-esc="vestidor.time_elapsed_dressing_room"/>
                                         </button>
@@ -115,11 +163,10 @@
                                         <th class="text-left">Cliente</th>
                                         <th class="text-left">Vestido(s)</th>
                                         <th class="text-left">Tiempo Transcurrido</th>
-                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr t-foreach="colas_vestidores_test" t-as="cola_vestidor" class="cola-draggable ui-widget-content" t-att-id="cola_vestidor.id">
+                                    <tr t-foreach="colas_vestidores_test" t-as="cola_vestidor" t-att-id="str(cola_vestidor.id) + '-' + cola_vestidor.cliente_id.name"  draggable="true" ondragstart="drag(event)">
                                         <td>
                                             <span t-esc="cola_vestidor.name"/>
                                         </td>
@@ -135,77 +182,6 @@
                                         <td>
                                             <span t-esc="cola_vestidor.time_elapsed"/>
                                         </td>
-                                        <td>
-                                            <button class="btn btn-primary pull-right" data-toggle="modal" t-att-data-target="'#' + str(cola_vestidor.id)" type="button">
-                                                <span>Asignar Vestidor</span>
-                                            </button>
-                                        </td>
-                                        <div class="modal fade" t-att-id="cola_vestidor.id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog" role="document">
-                                                <form action="/dressing_room_assignation" method="post" t-att-id="cola_vestidor.id">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <h4 class="modal-title">Asignamiento de vestidores</h4>
-                                                                </div>
-                                                                <div class="col-md-6">
-                                                                    <button type="button" class="close pull-rigth" data-dismiss="modal" aria-label="Close">
-                                                                        <span aria-hidden="true">X</span>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="row">
-                                                                <div class="col-md-12">
-                                                                    <div class="col-md-3" t-foreach="vestidores" t-as="vestidor">
-                                                                        <div class="form-check" t-if="vestidor.occupation">
-                                                                            <div>
-                                                                                <input class="form-check-input option-input radio" type="radio" disabled="" />
-                                                                            </div>
-                                                                            <div class="modal-label-name">
-                                                                                <label class="form-check-label" t-att-for="vestidor.id" style="color: red;">
-                                                                                    <span t-esc="vestidor.name"/>
-                                                                                </label>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="form-check" t-else="">
-                                                                            <div>
-                                                                                <input class="form-check-input option-input radio" type="radio" name="vestidor_id" t-att-value="vestidor.id"/>
-                                                                                <input type="hidden" name="vestidor_name" t-att-value="vestidor.name"/>
-                                                                                <input type="hidden" name="cola_vestidor_id" t-att-value="cola_vestidor.id" />
-                                                                                <input type="hidden" name="cola_vestidor_name" t-att-value="cola_vestidor.name" />
-                                                                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                                                                                <input type="hidden" name="redirect_to" value="/queue_test"/>
-                                                                            </div>
-                                                                            <div class="modal-label-name">
-                                                                                <label class="form-check-label" t-att-for="vestidor.id" style="color: green;">
-                                                                                    <span t-esc="vestidor.name"/>
-                                                                                </label>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <div class="row">
-                                                                <div class="col-md-6 text-left">
-                                                                    <span style="color: red; font-weight: 600;">Ocupado</span>
-                                                                    <br/>
-                                                                    <span style="color: green; font-weight: 600;">Disponible</span>
-                                                                </div>
-                                                                <div class="col-md-6">
-                                                                    <button type="submit" class="btn btn-primary">Asignar</button>
-                                                                    <button type="button" class="btn btn-warning" data-dismiss="modal">Cerrar</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
                                     </tr>
                                 </tbody>
                             </table>

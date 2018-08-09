@@ -9,7 +9,7 @@ class webVestidores(http.Controller):
     def dressing_room_test(self):
         return request.render('vestidores.vestidores')
 
-    @http.route(['/dressing_room_assignation'], type='http', auth="public", website=True)
+    @http.route(['/dressing_room_assignation'], type='http', auth="public", website=True, csrf=False)
     def get_dressing_room_assignation(self, **post):
         item_cola = request.env['items.colas'].create({
             'vestidores_ids': post.get('vestidor_id'),
@@ -19,7 +19,7 @@ class webVestidores(http.Controller):
             int(post.get('vestidor_id'))).write({'occupation': True, 'action_time': date.today()})
         update_encolado = request.env['bridetobe.colas.vestidores'].browse(
             int(post.get('cola_vestidor_id'))).write({'encolado': False})
-        return request.redirect(post.get('redirect_to'))
+        return 
 
     def set_queue(self):
         colas_vestidores = request.env['bridetobe.colas.vestidores'].search([

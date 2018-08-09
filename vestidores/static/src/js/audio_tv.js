@@ -21,21 +21,6 @@ $(document).on("ready", function(){
         }
         return "";
     };
-    function checkCookie(cookie, aux){
-        var cookieTicket = [];
-        var allTickets = [];
-        cookie.map((element) => {
-            cookieTicket.push(element.aux);
-        })
-        aux.map((element) => {
-            var aux = cookieTicket.indexOf(element.aux)
-            if(aux < 0){
-                allTickets.push(element);
-            }
-        })
-        return allTickets;
-    }
-
     var tickets = [];
     $('.table-tv tr').each(function() {
         var ticket = $(this).find("td span").eq(0).html();
@@ -47,18 +32,32 @@ $(document).on("ready", function(){
             }); 
         }
     });
+    function checkCookie(cookie, tickets){
+        var cookieTicket = [];
+        var allTickets = [];
+        cookie.map((element) => {
+            cookieTicket.push(element.ticket);
+        })
+        tickets.map((element) => {
+            var aux = cookieTicket.indexOf(element.ticket)
+            if(aux < 0){
+                allTickets.push(element);
+            }
+        })
+        return allTickets;
+    }
     var cookie = getCookie('Ticket');
-        if(cookie){
-            var checks = checkCookie(JSON.parse(cookie), tickets);
-            if (checks.length > 0) {
-                checks.map((element) => {
-                    responsiveVoice.speak("Numero " + element.ticket + " dirigirse al vestidor " + element.vestidor, "Spanish Latin American Female", {rate: 1.0});
-                })
-            };
-        }else{
-            tickets.map((element) => {
+    if(cookie){
+        var checks = checkCookie(JSON.parse(cookie), tickets);
+        if (checks.length > 0) {
+            checks.map((element) => {
                 responsiveVoice.speak("Numero " + element.ticket + " dirigirse al vestidor " + element.vestidor, "Spanish Latin American Female", {rate: 1.0});
             })
-        }
+        };
+    }else{
+        tickets.map((element) => {
+            responsiveVoice.speak("Numero " + element.ticket + " dirigirse al vestidor " + element.vestidor, "Spanish Latin American Female", {rate: 1.0});
+        })
+    }
     setCookie('Ticket', JSON.stringify(tickets), 15);
 });

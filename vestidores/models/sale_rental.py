@@ -11,10 +11,13 @@ class SaleRental(models.Model):
     @api.one
     @api.depends('test_date', 'delivery_date')
     def _compute_tipo_cita(self):
-        test_date = self.test_date.split(' ')[0]
-        delivery_date = self.delivery_date.split(' ')[0]
+        test_date = ""
+        delivery_date = ""
         today = date.today().strftime('%Y-%m-%d')
-
+        if self.test_date:
+            test_date = self.test_date.split(' ')[0]
+        if self.delivery_date:
+            delivery_date = self.delivery_date.split(' ')[0]
         if test_date == delivery_date:
             self.tipo_cita = 'Probar y Entregar'
         elif test_date == today:
