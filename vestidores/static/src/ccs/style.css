@@ -94,6 +94,7 @@
   color: #656262;
   text-align: left;
 }
+
 .btn-title-lv {
   font-size: 27px;
 }
@@ -101,5 +102,18 @@
   font-size:16px;                                          
 }
 .bvs {
+  margin-bottom: 15px;
+}
+
+ul.list-v{
+  list-style: none;
+}
+
+ul.list-v li{
+  display: inline;
+  margin: 10px
+}
+ 
+.top {
   margin-top: 15px;
 }
