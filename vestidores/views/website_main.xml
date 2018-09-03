@@ -11,6 +11,7 @@
                 <script type="text/javascript" src="/vestidores/static/src/js/responsivevoice.js"></script>
                 <script type="text/javascript" src="/vestidores/static/src/js/vestidores.js"></script>
                 <script type="text/javascript" src="/vestidores/static/src/js/jquery-ui.js"></script>
+		<script type="text/javascript" src="/vestidores/static/src/js/jquery.ui.touch-punch.min.js"></script>		
 
             </xpath>
         </template>
