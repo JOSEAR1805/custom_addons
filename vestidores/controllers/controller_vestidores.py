@@ -5,11 +5,11 @@ from datetime import time, date, datetime, timedelta
 
 class webVestidores(http.Controller):
 
-    @http.route(['/dressing_room'], type='http', auth='public', website=True)
+    @http.route(['/dressing_room'], type='http', auth='user', website=True)
     def dressing_room_test(self):
         return request.render('vestidores.vestidores')
 
-    @http.route(['/dressing_room_assignation'], type='http', auth="public", website=True, csrf=False)
+    @http.route(['/dressing_room_assignation'], type='http', auth="user", website=True, csrf=False)
     def get_dressing_room_assignation(self, **post):
         item_cola = request.env['items.colas'].create({
             'vestidores_ids': post.get('vestidor_id'),
@@ -48,12 +48,12 @@ class webVestidores(http.Controller):
         }
         return render_values
 
-    @http.route(['/queue_making'], type='http', auth="public", website=True)
+    @http.route(['/queue_making'], type='http', auth="user", website=True)
     def get_queue_making(self):
         values = self.set_queue()
         return request.render('vestidores.page_queue_making', values)
 
-    @http.route(['/queue_test'], type='http', auth="public", website=True)
+    @http.route(['/queue_test'], type='http', auth="user", website=True)
     def get_queue_test(self):
         values = self.set_queue()
         return request.render('vestidores.page_queue_test', values)
@@ -103,12 +103,12 @@ class webVestidores(http.Controller):
 
         return render_values
 
-    @http.route(['/quotes'], type='http', auth="public", methods=['GET'], website=True)
+    @http.route(['/quotes'], type='http', auth="user", methods=['GET'], website=True)
     def quotes(self, **get):
         view_id = request.httprequest.full_path.replace('/', '').replace('?', '')
         return request.render('vestidores.page_quotes_form', {'error': dict(), 'view_id': view_id})
 
-    @http.route(['/quotes'], type='http', auth="public", methods=['POST'], website=True, csrf=True)
+    @http.route(['/quotes'], type='http', auth="user", methods=['POST'], website=True, csrf=True)
     def get_customer(self, **post):
         render_values = self.validate_customer(post.get('customer'), post)
         if render_values['error']:
@@ -116,7 +116,7 @@ class webVestidores(http.Controller):
         else:
             return request.render('vestidores.page_quotes', render_values)
 
-    @http.route(['/take_turn_in_queue'], type='http', auth="public", website=True)
+    @http.route(['/take_turn_in_queue'], type='http', auth="user", website=True)
     def take_turn_in_queue(self, **post):
         colas_vestidores = request.env['bridetobe.colas.vestidores'].create({
             'sale_rental_id': post.get('sale_rental_id'),
@@ -129,12 +129,12 @@ class webVestidores(http.Controller):
         )
         return request.redirect(post.get('redirect_to'))
         
-    @http.route(['/modista'], type='http', auth="public", website=True)
+    @http.route(['/modista'], type='http', auth="user", website=True)
     def get_modista(self):
         items_colas = request.env['items.colas'].search([])
         return request.render('vestidores.page_modistas', {'items_colas': items_colas})
 
-    @http.route(['/views_tv'], type='http', auth="public", website=True )
+    @http.route(['/views_tv'], type='http', auth="user", website=True )
     def index_dressing_room(self, **kw):
         items_colas = request.env['items.colas'].search([])
         return request.render('vestidores.page_queue_tv', {
@@ -175,12 +175,12 @@ class webVestidores(http.Controller):
         }
         return render_values
 
-    @http.route(['/assignment_to_test'], type='http', auth="public", methods=['GET'], website=True)
+    @http.route(['/assignment_to_test'], type='http', auth="user", methods=['GET'], website=True)
     def assignment_to_test(self, **get):
         view_id = request.httprequest.full_path.replace('/', '').replace('?', '')
         return request.render('vestidores.page_queue_test_set_partner_form', {'error': dict(), 'view_id': view_id})
 
-    @http.route(['/assignment_to_test'], type='http', auth="public", methods=['POST'], website=True, csrf=True)
+    @http.route(['/assignment_to_test'], type='http', auth="user", methods=['POST'], website=True, csrf=True)
     def get_partner(self, **post):
         render_values = self.validate_partner(post.get('partner_vat'), post)
         if render_values['error']:
@@ -188,7 +188,7 @@ class webVestidores(http.Controller):
         else:
             return request.render('vestidores.page_queue_test_set_partner', render_values)
 
-    @http.route(['/test_queue_assignation'], type='http', auth="public", website=True)
+    @http.route(['/test_queue_assignation'], type='http', auth="user", website=True)
     def get_test_queue_assignation(self, **post):
         colas_vestidores = request.env['bridetobe.colas.vestidores'].create({
             'cliente_id': post.get('cliente_id'),
@@ -198,7 +198,7 @@ class webVestidores(http.Controller):
         })
         return request.redirect(post.get('redirect_to'))
         
-    @http.route(['/register_customer'], type='http', auth='public', website=True, methods=['GET'])
+    @http.route(['/register_customer'], type='http', auth='user', website=True, methods=['GET'])
     def render_register_customer(self, **get):
         error = dict()
         error_message = []
@@ -219,7 +219,7 @@ class webVestidores(http.Controller):
             'product_ids': product_ids
         })
 
-    @http.route(['/save_customer'], type='http', auth="public", website=True)
+    @http.route(['/save_customer'], type='http', auth="user", website=True)
     def get_customer_new(self, **post):
         customers = request.env['res.partner'].create({
             'name': post.get('name'),
@@ -247,7 +247,7 @@ class webVestidores(http.Controller):
                 })
         return request.redirect('/queue_test')
 
-    @http.route(['/end_process_dressing_room'], type='http', auth="public", website=True)
+    @http.route(['/end_process_dressing_room'], type='http', auth="user", website=True)
     def get_end_process_dressing_room(self, **post):
         update_occupation_vestidor = request.env['bridetobe.vestidores'].browse(
             int(post.get('vestidor_id'))).write({'occupation': False, 'action_time': date.today()})
@@ -258,7 +258,7 @@ class webVestidores(http.Controller):
 
 # ----------------------PRUEBAS DE JOSE ARTIGAS---------------------------
 
-    @http.route(['/quotes_test'], type='http', auth="public", website=True)
+    @http.route(['/quotes_test'], type='http', auth="user", website=True)
     def quotes_test(self):
         sale_rentals = request.env['sale.rental'].search([
             '&',
@@ -273,7 +273,7 @@ class webVestidores(http.Controller):
         ])
         return request.render('vestidores.page_quotes_test', {'sale_rentals': sale_rentals})
 
-    @http.route(['/dressing_room_test'], type='http', auth="public", website=True)
+    @http.route(['/dressing_room_test'], type='http', auth="user", website=True)
     def get_dressing_room(self):
         colas_vestidores_conf = request.env['bridetobe.colas.vestidores'].search([
             '&',
