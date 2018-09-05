@@ -38,7 +38,6 @@
         'views/website_queue_test.xml',
         'views/website_queue_tv.xml',
         'views/website_quotes.xml',
-        'views/website_vestidores_test.xml',
         'views/website_vestidores.xml',
     ],
     # only loaded in demonstration mode

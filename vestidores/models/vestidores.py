@@ -24,13 +24,3 @@ class bridetobeVestidores(models.Model):
             self.time_elapsed_dressing_room = "23:59:59"
         else:
             self.time_elapsed_dressing_room = str(h2 - h1)
-
-    @api.constrains('name')
-    def _name_not_number(self):
-        if str(self.name).isdigit():
-            raise ValidationError('Mensaje -> '+self.name+' <-')
-
-
-    _sql_constraints = [
-        ('name_uniq','unique(name)','Invoice Number must be unique per Company!'),
-    ]
